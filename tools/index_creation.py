@@ -6,18 +6,13 @@ from pinecone import Pinecone
 load_dotenv()
 # initialize connection to pinecone
 api_key = os.environ.get('PINECONE_API_KEY') 
-
 # configure client
 pc = Pinecone(api_key=api_key)
-
 # index specification
 from pinecone import ServerlessSpec
-
 cloud = os.environ.get('PINECONE_CLOUD') or 'aws'
 region = os.environ.get('PINECONE_REGION') or 'us-east-1'
-
 spec = ServerlessSpec(cloud=cloud, region=region)
-
 # choose a name for your index
 index_name = "walmart-search"
 
@@ -25,7 +20,6 @@ index_name = "walmart-search"
 # align the dimension value to that of our retrieval model, which outputs 512-dimensional vectors.
 
 import time
-
 # check if index already exists (it shouldn't if this is first time)
 if index_name not in pc.list_indexes().names():
     # if does not exist, create index

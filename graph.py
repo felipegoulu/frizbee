@@ -38,10 +38,8 @@ async def tool_node(state: dict):
     for tool_call in state["messages"][-1].tool_calls:
         # Get the tool from the dictionary
         tool = tools_by_name[tool_call["name"]]
-
         # Create an async task for each tool invocation
         task = asyncio.create_task(tool.ainvoke(tool_call["args"]))
-
         # Append the task along with the tool_call_id for later use
         tasks.append((task, tool_call["id"]))
 
@@ -89,7 +87,6 @@ def _call_model(state: GraphsState):
     Never repeat the same answer more than once!
 
     Only look for salt if the user asks for salt.
-
 
     When returning the answer, remember that the user is a foodie, and the answer should help the user understand the why of the product. You are a food expert and have to describe the choices to the user in a desctriptive manner.
           ''')

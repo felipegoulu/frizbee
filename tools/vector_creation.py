@@ -1,5 +1,4 @@
 # Im going to create the sparse vectors using BM25.
-
 # Establish connection with db.
 
 import psycopg2
@@ -63,13 +62,9 @@ from tqdm.auto import tqdm
 
 batch_size = 500
 
-#pinecone_index.delete(delete_all=True)
-
 for i in tqdm(range(0, len(metadata), batch_size)):
-
     # find the end of batch
     i_end = min(i + batch_size, len(metadata))
-
     # extract metadata batch
     meta_batch = metadata.iloc[i:i_end]
     meta_dict = meta_batch.to_dict(orient="records")
@@ -85,42 +80,28 @@ for i in tqdm(range(0, len(metadata), batch_size)):
 
     # Apply clean_metadata to each dictionary in the list
     meta_dict = [clean_metadata(row) for row in meta_dict]
-
-    print(meta_dict)
-
     meta_batch_list = meta_batch[['product_name', 'department', 'category', 'subcategory']].values.tolist()  # Convert the DataFrame to a list of rows
     meta_batch = []
 
-    #~~~~~~~~~~~~~~~~~~~~~~~~
     # Iterate through each row in the list of rows
     for row in meta_batch_list:
         concatenated_row = ""
-
         # Iterate through each value in the row
         for value in row:
             if value is not None:
                 concatenated_row += str(value) + " "  # Convert to string and add a space
             else:
                 concatenated_row += " "  # Add a space if the value is None
-
         # Strip any trailing spaces and append the concatenated string to the result list
         meta_batch.append(concatenated_row.strip())
-    #~~~~~~~~~~~~~~~~~~~~~~~~
-
-    # concatenate all metadata fields
-    #meta_batch = [" ".join(map(lambda x: str(x) if x is not None else '', x)) for x in meta_batch.values.tolist()]
 
     # create sparse BM25 vectors
     sparse_embeds = bm25.encode_documents(meta_batch)
-
     # Create dense vectors using text-embedding-ada-002
     dense_embeds = embedding_client.embed_documents(meta_batch)
-
     # create unique IDs
     ids = [str(x) for x in range(i, i_end)]
-
     upserts = []
-
     # loop through the data and create dictionaries for uploading documents to pinecone index
     for _id, sparse, dense, meta in zip(ids, sparse_embeds, dense_embeds, meta_dict):
         upserts.append({
@@ -129,7 +110,6 @@ for i in tqdm(range(0, len(metadata), batch_size)):
             'values': dense,  # Dense vector (can be zeros if not used)
             'metadata': meta  # Metadata (optional)
         })
-
     # upload the documents to the new hybrid index
     pinecone_index.upsert(upserts)
 

@@ -27,8 +27,6 @@ with st.sidebar:
 
 # Loop through all messages in the session state and render them as a chat on every st.refresh mech
 for msg in st.session_state.messages:
-    # https://docs.streamlit.io/develop/api-reference/chat/st.chat_message
-    # we store them as AIMessage and HumanMessage as its easier to send to LangGraph
     if isinstance(msg, AIMessage):
         st.chat_message("assistant", avatar=BOT_AVATAR).write(msg.content)
     elif isinstance(msg, HumanMessage):
@@ -40,7 +38,6 @@ if user_query:
     st.chat_message("user", avatar = USER_AVATAR).write(user_query)
 
     with st.chat_message("assistant", avatar = BOT_AVATAR):
-        # create a placeholder container for streaming and any other events to visually render here
         placeholder = st.container()
         response = asyncio.run(invoke_our_graph(st.session_state.messages, placeholder))
         st.session_state.messages.append(AIMessage(response))
