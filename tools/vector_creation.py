@@ -1,26 +1,21 @@
 # Im going to create the sparse vectors using BM25.
-# Establish connection with db.
 
-import psycopg2
 import pandas as pd
 import os
 from dotenv import load_dotenv
 load_dotenv()
 
-# Connect to your PostgreSQL database
-conn = psycopg2.connect(
-    dbname=os.getenv("DB_NAME"), 
-    user=os.getenv("DB_USER"), 
-    password=os.getenv("DB_PASSWORD"), 
-    host=os.getenv("DB_HOST"), 
-    port=os.getenv("DB_PORT")
-)
+df = pd.read_csv("data_results.csv")
+df['discount_percentage'] = df['discount_percentage'].fillna(0).astype(str) + "%"
 
-query = "SELECT product_name, department, category, subcategory, price_current, product_url FROM walmart_78130"
+df.drop(['original_price'],axis=1, inplace=True)
 
-metadata = pd.read_sql(query, conn)
+df['discount_percentage'] = df['discount_percentage'].str.replace('%', '', regex=False)
+df['discount_percentage'] = pd.to_numeric(df['discount_percentage'], errors='coerce')
+df['discount_percentage'] = df['discount_percentage'].abs()
+df['discount_percentage'] = df['discount_percentage'].fillna(0).astype(int).astype(str) + "%"
 
-conn.close()
+metadata = df
 
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 
@@ -55,7 +50,7 @@ api_key = os.environ.get('PINECONE_API_KEY')
 
 # connect to index
 pc = Pinecone(api_key=api_key)
-index_name = 'walmart-search'
+index_name = 'jumbo-ai'
 pinecone_index = pc.Index(index_name)
 
 from tqdm.auto import tqdm
@@ -80,8 +75,9 @@ for i in tqdm(range(0, len(metadata), batch_size)):
 
     # Apply clean_metadata to each dictionary in the list
     meta_dict = [clean_metadata(row) for row in meta_dict]
-    meta_batch_list = meta_batch[['product_name', 'department', 'category', 'subcategory']].values.tolist()  # Convert the DataFrame to a list of rows
+    meta_batch_list = meta_batch[['product_name', 'brand', 'category', 'sub_category']].values.tolist()  # Convert the DataFrame to a list of rows
     meta_batch = []
+
 
     # Iterate through each row in the list of rows
     for row in meta_batch_list:

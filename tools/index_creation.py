@@ -14,7 +14,7 @@ cloud = os.environ.get('PINECONE_CLOUD') or 'aws'
 region = os.environ.get('PINECONE_REGION') or 'us-east-1'
 spec = ServerlessSpec(cloud=cloud, region=region)
 # choose a name for your index
-index_name = "walmart-search"
+index_name = "jumbo-ai"
 
 #for parse-dense index in Pinecone we must set metric="dotproduct" and 
 # align the dimension value to that of our retrieval model, which outputs 512-dimensional vectors.

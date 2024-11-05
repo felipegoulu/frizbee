@@ -21,7 +21,7 @@ if "messages" not in st.session_state:
 # Sidebar with a button to delete chat history
 with st.sidebar:
     st.title('💬 Asistente Frizbee')
-    st.markdown('📖 Frizbee tiene todo el catalogo de Walmart. Preguntale que quieres comprar y el te arma la lista y luego lo compra automaticamente!')
+    st.markdown('📖 Frizbee tiene todo el catalogo de Jumbo. Preguntale que quieres comprar y el te arma la lista y luego lo compra automaticamente!')
     if st.button("Borrar Historial"):
         st.session_state.messages = []
 

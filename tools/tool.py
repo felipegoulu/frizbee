@@ -19,7 +19,7 @@ api_key = os.environ.get('PINECONE_API_KEY')
 
 # connect to index
 pc = Pinecone(api_key=api_key)
-index_name = 'walmart-search'
+index_name = 'jumbo-ai'
 pinecone_index = pc.Index(index_name)
 
 import asyncio
@@ -36,7 +36,7 @@ from langchain_core.tools import tool
 @tool
 async def product_lookup_tool(query):
     """
-    Look for a product inside the supermarket database
+    Busco dentro de la base de datos del supermercado 'jumbo'
     """
     # Check if the bm25 model is loaded
     bm25 = await load_bm25_model()  # Ensure the model is loaded
@@ -54,9 +54,11 @@ async def product_lookup_tool(query):
     final_result = []
     for i in range(len(result_matches)):
         final_result.append({
-            'product_name': result_matches[i]['metadata']['product_name'],
-            'price': result_matches[i]['metadata']['price_current'],
-            'url': result_matches[i]['metadata']['product_url'],
+            'nombre_producto': result_matches[i]['metadata']['product_name'],
+            'price_with_discount': result_matches[i]['metadata']['price_with_discount'],
+            'discount': result_matches[i]['metadata']['discount_percentage'],
+            'link_producto': result_matches[i]['metadata']['link'],
+            'link_imagen': result_matches[i]['metadata']['image'],
         })
             
     # Convert the list of dictionaries to a JSON string
