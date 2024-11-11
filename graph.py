@@ -9,6 +9,7 @@ from langchain_openai import ChatOpenAI
 from langchain_core.messages import BaseMessage, ToolMessage, SystemMessage
 
 from tools.tool import product_lookup_tool
+from tools.jumbo_bot import jumbo_bot
 
 # This is the default state same as "MessageState" TypedDict but allows us accessibility to custom keys
 class GraphsState(TypedDict):
@@ -20,7 +21,7 @@ graph = StateGraph(GraphsState)
 # Creo el nodo tool
 
 # List of tools that will be accessible to the graph via the ToolNode
-tools = [product_lookup_tool]
+tools = [product_lookup_tool, jumbo_bot]
 
 tools_by_name = {tool.name: tool for tool in tools}
 
@@ -29,7 +30,7 @@ llm = model.bind_tools(tools)
 
 import asyncio
 
-async def tool_node(state: dict):
+async def product_lookup_tool(state: dict):
     result = []
 
     # Create a list of tasks for parallel execution
@@ -51,11 +52,37 @@ async def tool_node(state: dict):
 
     return {"messages": result}
 
-def should_continue(state: GraphsState) -> Literal["tools", "__end__"]:
-    messages = state["messages"]
-    last_message = messages[-1]
-    if last_message.tool_calls:  # Check if the last message has any tool calls
-        return "tools"  # Continue to tool execution
+
+from threading import Thread
+
+def jumbo_bot(state: dict):
+    tool_call = state["messages"][-1].tool_calls[0]
+    tool = tools_by_name[tool_call["name"]]
+    
+    # Ejecutar en un thread separado
+    Thread(target=tool.invoke, args=(tool_call["args"],), daemon=True).start()
+
+    return {"messages": [ToolMessage(content="Procesando tu pedido...", tool_call_id=tool_call["id"], type="tool")]}
+
+'''
+def jumbo_bot(state: dict):
+    result = [] 
+    tool_call = state["messages"][-1].tool_calls[0]
+    tool = tools_by_name[tool_call["name"]]
+    observation = tool.invoke(tool_call["args"])
+    result.append(ToolMessage(content=observation, tool_call_id = tool_call["id"], type="tool"))
+    return {"messages": result}
+'''
+def determine_tool_node(state: GraphsState) -> Literal["product_lookup", "jumbo_bot", "__end__"]:
+    if not state["messages"][-1].tool_calls:
+        return "__end__"
+    
+    tool_name = state["messages"][-1].tool_calls[0]["name"]
+    
+    if tool_name == "product_lookup_tool":
+        return "product_lookup"
+    elif tool_name == "jumbo_bot":
+        return "jumbo_bot"  # Continue to tool execution
     return "__end__"  # End the conversation if no tool is needed
 
 # Core invocation of the model
@@ -80,6 +107,9 @@ def _call_model(state: GraphsState):
         NO muestres las IMAGENES
 
         Cuando el usario pide un producto, responde como maximo 4 opciones para ese producto
+
+        Si el usuario dice: "Hace la compra", debes utilizar la tool llamada jumbo_bot y poner como input el link de los productos que quieres añadir al carrito. (enviar como lista)                                  
+
           ''')
 
     conversation = [system_prompt] + state["messages"]
@@ -88,15 +118,18 @@ def _call_model(state: GraphsState):
 
 # Define the structure (nodes and directional edges between nodes) of the graph
 graph.add_edge(START, "modelNode")
-graph.add_node("tools", tool_node)
+graph.add_node("product_lookup", product_lookup_tool)
+graph.add_node("jumbo_bot", jumbo_bot)
 graph.add_node("modelNode", _call_model)
 
 # Add conditional logic to determine the next step based on the state (to continue or to end)
 graph.add_conditional_edges(
     "modelNode",
-    should_continue,  # This function will decide the flow of execution
+    determine_tool_node,  # This function will decide the flow of execution
 )
-graph.add_edge("tools", "modelNode")
+
+graph.add_edge("product_lookup", "modelNode")
+graph.add_edge("jumbo_bot", "modelNode")
 
 # Compile the state graph into a runnable object
 graph_runnable = graph.compile()

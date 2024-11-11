@@ -33,7 +33,7 @@ async def load_bm25_model():
 import asyncio
 from langchain_core.tools import tool
 
-@tool
+@tool("product_lookup_tool")
 async def product_lookup_tool(query):
     """
     Busco dentro de la base de datos del supermercado 'jumbo'

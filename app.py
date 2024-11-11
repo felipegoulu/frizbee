@@ -8,7 +8,7 @@ from astream_events_handler import invoke_our_graph   # Utility function to hand
 
 load_dotenv()
 
-USER_AVATAR = "👨🏼‍🏭"
+USER_AVATAR = "🧑🏻"
 BOT_AVATAR = "🤖"
 
 # Capture user input from chat input
