@@ -12,8 +12,9 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.common.exceptions import TimeoutException, NoSuchElementException, ElementClickInterceptedException
 
-
-
+import os
+from dotenv import load_dotenv
+load_dotenv()
 def initialize_driver(url):
     options = webdriver.ChromeOptions()
     options.add_argument('--window-size=1920,1080')  # Set window size
@@ -149,12 +150,12 @@ def crear_lista(nombre_lista,driver):
     #button.click()
     time.sleep(10)
 
-    button = WebDriverWait(driver, 11).until(
+    button = WebDriverWait(driver, 20).until(
     EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Guardar compra en mis listas']"))
     )
     button.click()
 
-    input_field = WebDriverWait(driver, 12).until(
+    input_field = WebDriverWait(driver, 20).until(
         EC.element_to_be_clickable((By.XPATH, "//input[@placeholder='Ejemplo: Lista Desayuno']"))
     )
 
@@ -179,7 +180,7 @@ from langchain_core.tools import tool
 
 
 @tool("jumbo_bot")
-def jumbo_bot(urls, email = "fegoulu@itba.edu.ar", password = "Londres1908", address = "Los bosques 1730"):
+def jumbo_bot(urls, email = "EMAIL", password = "PASSWORD", address = "ADDRESS"):
     """
     Tool utilizada para añadir productos al carrito.
     """
