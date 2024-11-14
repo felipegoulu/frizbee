@@ -11,6 +11,12 @@ from langchain_core.messages import BaseMessage, ToolMessage, SystemMessage
 from tools.tool import product_lookup_tool
 from tools.jumbo_bot_api import make_list
 
+import os
+from dotenv import load_dotenv
+load_dotenv()
+os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
+
+
 # This is the default state same as "MessageState" TypedDict but allows us accessibility to custom keys
 class GraphsState(TypedDict):
     messages: Annotated[list[AnyMessage], add_messages]

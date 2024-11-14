@@ -5,8 +5,10 @@ from langchain_core.messages import AIMessage, HumanMessage
 import asyncio
 
 from astream_events_handler import invoke_our_graph   # Utility function to handle events from astream_events from graph
-
+import os
+from dotenv import load_dotenv
 load_dotenv()
+os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
 
 USER_AVATAR = "🧑🏻"
 BOT_AVATAR = "🤖"
