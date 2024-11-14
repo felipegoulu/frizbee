@@ -21,16 +21,24 @@ def call_api(payload, api_url):
         return "Error"
 
 import time
+import os
+
+from dotenv import load_dotenv
+load_dotenv()
 
 @tool
 def make_list(urls):
     """
     Input a list with the URLs of the products you want to buy, and the tool buys those products.
     """
+    password = os.getenv("PASSWORD")
+    email = os.getenv("EMAIL")
+    address = os.getenv("ADDRESS")
+
     payload = {
-        "email": "fegoulu@itba.edu.ar",  # Sensitive data - consider using environment variables
-        "password": "Londres1908",        # Sensitive data - consider using environment variables
-        "address": "Avenida los bosques 1730",
+        "email": email,  
+        "password": password,        
+        "address": address,
         "urls": urls
     }
     
