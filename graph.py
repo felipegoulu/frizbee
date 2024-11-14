@@ -9,7 +9,7 @@ from langchain_openai import ChatOpenAI
 from langchain_core.messages import BaseMessage, ToolMessage, SystemMessage
 
 from tools.tool import product_lookup_tool
-from tools.jumbo_bot import jumbo_bot
+from tools.jumbo_bot_api import make_list
 
 # This is the default state same as "MessageState" TypedDict but allows us accessibility to custom keys
 class GraphsState(TypedDict):
@@ -21,7 +21,7 @@ graph = StateGraph(GraphsState)
 # Creo el nodo tool
 
 # List of tools that will be accessible to the graph via the ToolNode
-tools = [product_lookup_tool, jumbo_bot]
+tools = [product_lookup_tool, make_list]
 
 tools_by_name = {tool.name: tool for tool in tools}
 
@@ -81,7 +81,7 @@ def determine_tool_node(state: GraphsState) -> Literal["product_lookup", "jumbo_
     
     if tool_name == "product_lookup_tool":
         return "product_lookup"
-    elif tool_name == "jumbo_bot":
+    elif tool_name == "make_list":
         return "jumbo_bot"  # Continue to tool execution
     return "__end__"  # End the conversation if no tool is needed
 
