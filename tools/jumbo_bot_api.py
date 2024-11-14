@@ -43,8 +43,8 @@ def make_list(urls):
     }
     
 # AWS server info
-    AWS_IP = "3.135.231.107"
-    SSH_KEY = "/Users/felipegoulu/projects/frizbee_aws_keypair.pem"
+    AWS_IP = os.getenv("AWS_IP")
+    SSH_KEY = os.getenv("SSH_KEY")
     API_URL = f"http://{AWS_IP}:8000/run_bot"
     start_uvicorn_server(SSH_KEY, AWS_IP) 
 
