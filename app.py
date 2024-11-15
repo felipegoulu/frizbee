@@ -4,6 +4,13 @@ import streamlit as st
 from langchain_core.messages import AIMessage, HumanMessage
 import asyncio
 
+import nltk
+@st.cache_resource  # This decorator ensures the download happens only once
+def download_nltk_resources():
+    nltk.download('punkt_tab')
+   
+download_nltk_resources()
+
 from astream_events_handler import invoke_our_graph   # Utility function to handle events from astream_events from graph
 import os
 from dotenv import load_dotenv
