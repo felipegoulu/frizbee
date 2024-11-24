@@ -27,26 +27,109 @@ user_query = st.chat_input('En que te puedo ayudar?')
 if "messages" not in st.session_state:
     st.session_state.messages = []  # Reset the chat history
 
+if "my_cart" not in st.session_state:
+    st.session_state.my_cart = []
+
+st.markdown("""
+    <style>
+    .cart-item {
+        padding: 12px;
+        margin: 8px 0;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        border-left: 4px solid #007bff;
+    }
+    .total-section {
+        padding: 15px;
+        margin-top: 20px;
+        background-color: #e9ecef;
+        border-radius: 8px;
+        font-size: 1.1em;
+    }
+    .product-link {
+        color: #007bff;
+        text-decoration: none;
+        font-weight: bold;
+    }
+    .product-link:hover {
+        text-decoration: underline;
+        color: #0056b3;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 # Sidebar with a button to delete chat history
 with st.sidebar:
-    st.title('💬 Asistente Frizbee')
-    st.markdown('📖 Frizbee tiene todo el catalogo de Jumbo. Preguntale que quieres comprar y el te arma la lista y luego lo compra automaticamente!')
+    #st.title('💬 Asistente Frizbee')
+    #st.markdown('📖 Frizbee tiene todo el catalogo de Jumbo. Preguntale que quieres comprar y el te arma la lista y luego lo compra automaticamente!')
     if st.button("Borrar Historial"):
         st.session_state.messages = []
+
+    st.markdown("### 🛒 Shopping Cart")
+    st.markdown("---")
+
+
+from initial_questions import show_initial_questions
+# Cuando quieras mostrar la pregunta inicial:
+st.session_state.user_choices = show_initial_questions(BOT_AVATAR)
+print(st.session_state.user_choices)
 
 # Loop through all messages in the session state and render them as a chat on every st.refresh mech
 for msg in st.session_state.messages:
     if isinstance(msg, AIMessage):
         st.chat_message("assistant", avatar=BOT_AVATAR).write(msg.content)
     elif isinstance(msg, HumanMessage):
-        st.chat_message("user", avatar= USER_AVATAR).write(msg.content)
+        if msg.content != "Empieza":
+            st.chat_message("user", avatar= USER_AVATAR).write(msg.content)
 
 # Handle user input if provided
-if user_query:
-    st.session_state.messages.append(HumanMessage(content=user_query))
-    st.chat_message("user", avatar = USER_AVATAR).write(user_query)
+if len(st.session_state.messages) > 0:
+    last_message = st.session_state.messages[-1]
 
-    with st.chat_message("assistant", avatar = BOT_AVATAR):
-        placeholder = st.container()
-        response = asyncio.run(invoke_our_graph(st.session_state.messages, placeholder))
-        st.session_state.messages.append(AIMessage(response))
+if (len(st.session_state.messages) > 0) and (last_message.content ==  "Empieza" or user_query):
+    if last_message.content != "Empieza":
+        st.session_state.messages.append(HumanMessage(content=user_query))
+        st.chat_message("user", avatar = USER_AVATAR).write(user_query)
+
+    state = {
+        "messages": st.session_state.messages,
+        "cart": st.session_state.my_cart,
+        "user_choices": st.session_state.user_choices
+    }
+
+    placeholder = st.container()
+    response = asyncio.run(invoke_our_graph(state, BOT_AVATAR))
+
+    st.session_state.messages.append(response["messages"])
+    st.session_state.my_cart = response["cart"]
+    with st.sidebar:
+        st.sidebar.empty()    
+
+
+        total = 0
+        for i in range(len(st.session_state.my_cart)):
+            nombre = st.session_state.my_cart[i]["name"] 
+            cantidad = st.session_state.my_cart[i]["quantity"] 
+            precio = st.session_state.my_cart[i]["price"] 
+            link = st.session_state.my_cart[i]["link"] 
+            #precio_double = float(precio.strip("$"))
+            #total += precio_double
+
+            st.markdown(f"""
+                <div class="cart-item">
+                    <div style="display: flex; justify-content: space-between;">
+                        <a href={link} class="product-link">{nombre}</a>
+                        <span>{precio}</span>
+                    </div>
+                    <div style="color: #666; font-size: 0.9em;">Qty: {cantidad}</div>
+                </div>
+            """, unsafe_allow_html=True)
+
+        #st.markdown(f"""
+        #    <div class="total-section">
+        #        <div style="display: flex; justify-content: space-between;">
+        #            <strong>Total</strong>
+        #            <strong>{total}</strong>
+        #        </div>
+        #    </div>
+        #""", unsafe_allow_html=True)
