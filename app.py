@@ -69,32 +69,24 @@ with st.sidebar:
     st.markdown("---")
 
 
-from initial_questions import show_initial_questions
+#from initial_questions import show_initial_questions
 # Cuando quieras mostrar la pregunta inicial:
-st.session_state.user_choices = show_initial_questions(BOT_AVATAR)
-print(st.session_state.user_choices)
+#st.session_state.user_choices = show_initial_questions(BOT_AVATAR)
+#print(st.session_state.user_choices)
 
 # Loop through all messages in the session state and render them as a chat on every st.refresh mech
 for msg in st.session_state.messages:
     if isinstance(msg, AIMessage):
         st.chat_message("assistant", avatar=BOT_AVATAR).write(msg.content)
     elif isinstance(msg, HumanMessage):
-        if msg.content != "Empieza":
-            st.chat_message("user", avatar= USER_AVATAR).write(msg.content)
+        st.chat_message("user", avatar= USER_AVATAR).write(msg.content)
 
 # Handle user input if provided
-if len(st.session_state.messages) > 0:
-    last_message = st.session_state.messages[-1]
 
-if (len(st.session_state.messages) > 0) and (last_message.content ==  "Empieza" or user_query):
-    if last_message.content != "Empieza":
-        st.session_state.messages.append(HumanMessage(content=user_query))
-        st.chat_message("user", avatar = USER_AVATAR).write(user_query)
-
+if  user_query:
     state = {
         "messages": st.session_state.messages,
         "cart": st.session_state.my_cart,
-        "user_choices": st.session_state.user_choices
     }
 
     placeholder = st.container()

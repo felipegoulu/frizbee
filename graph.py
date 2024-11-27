@@ -20,12 +20,6 @@ os.environ["LANGSMITH_API_KEY"] = os.getenv("LANGCHAIN_API_KEY")
 os.environ["LANGCHAIN_PROJECT"] = os.getenv("LANGCHAIN_PROJECT")
 os.environ["LANGCHAIN_TRACING_V2"] = os.getenv("LANGCHAIN_TRACING_V2")
 
-class UserChoices(TypedDict):
-    restricciones_alimentarias: List[str]
-    categorias_a_comprar: List[str]
-    presupuesto: List[str]
-    numero_de_personas: List[str]
-
 class CartItem(TypedDict):
     name: str
     quantity: str
@@ -35,7 +29,6 @@ class CartItem(TypedDict):
 class GraphsState(TypedDict):
     messages: Annotated[list[AnyMessage], add_messages]
     cart: List[CartItem]
-    user_choices: UserChoices
 
 
 graph = StateGraph(GraphsState)
@@ -179,21 +172,9 @@ def determine_tool_node(state: GraphsState) -> Literal["product_lookup", "add_pr
 # Core invocation of the model
 def _call_model(state: GraphsState):
     cart_info = f'''\nCarrito actual: {state["cart"]}'''
-    user_choices = state["user_choices"]
-    categorias_a_comprar = user_choices["categorias_a_comprar"]
-    numero_de_personas =  user_choices["numero_de_personas"]
-    presupuesto = user_choices["presupuesto"]
-    restricciones_alimentarias = user_choices["restricciones_alimentarias"]
     system_prompt = SystemMessage(f'''
 Eres un asistente de compras del supermercado Jumbo que ayuda a realizar la compra semanal. Debes ser conversacional y hacer preguntas personalizadas basadas en las respuestas del usuario.
 
-INFORMACIÓN DEL USUARIO:
-- Restricciones alimentarias: {restricciones_alimentarias}
-- Número de personas: {numero_de_personas}
-- Presupuesto: {presupuesto}
-
-CATEGORÍAS A CUBRIR:
-{categorias_a_comprar}
 
 INSTRUCCIONES:
 1. Sigue el orden de las categorías seleccionadas
@@ -260,7 +241,6 @@ Para agregar productos , debes usar la tool add_products y poner como input el n
 
 Para usar la herramienta, necesitas enviar los productos que debes buscar en la base de datos. La herramienta recuperará esos productos. Busca un producto a la vez. Si la herramienta no recupera la información necesaria, intenta de nuevo hasta que obtengas el producto correcto; nunca inventes productos.
 
-
 Carrito actual: {cart_info}
 
 GUSTOS DEL USUARIO:
@@ -275,8 +255,6 @@ De desayuno suelo comer yogurt con frutas y granola o huevos revueltos.
 
     conversation = [system_prompt] + state["messages"] 
     response = llm.invoke(conversation)
-
-
 
     # If it has tool_calls, return the response directly. I need all the answer because it has the tool call name.
     if hasattr(response, 'tool_calls') and response.tool_calls:
