@@ -4,6 +4,8 @@ from langchain_core.messages import AIMessage, HumanMessage
 import asyncio
 import nltk
 import psycopg2
+from psycopg2.pool import ThreadedConnectionPool
+
 from psycopg2.extras import RealDictCursor
 import os
 from datetime import datetime
@@ -53,24 +55,8 @@ from astream_events_handler import invoke_our_graph
 USER_AVATAR = "🧑🏻"
 BOT_AVATAR = "🤖"
 
-# Database connection management
-@contextmanager
-def get_db_connection():
-    conn = None
-    try:
-        conn = psycopg2.connect(
-            dbname=os.getenv('DB_NAME'),
-            user=os.getenv('DB_USER'),
-            password=os.getenv('DB_PASSWORD'),
-            host=os.getenv('DB_HOST'),
-            port=os.getenv('DB_PORT')
-        )
-        yield conn
-    except psycopg2.Error as e:
-        st.error(f"Database connection failed: {e}")
-    finally:
-        if conn is not None:
-            conn.close()
+from db import get_db_connection
+
 
 # Add this new function to get user preferences
 def get_user_preferences(session_id):

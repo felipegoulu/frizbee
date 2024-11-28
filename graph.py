@@ -39,24 +39,8 @@ class GraphsState(TypedDict):
 
 graph = StateGraph(GraphsState)
 
-@contextmanager
-def get_db_connection():
-    conn = None
-    try:
-        conn = psycopg2.connect(
-            dbname=os.getenv('DB_NAME'),
-            user=os.getenv('DB_USER'),
-            password=os.getenv('DB_PASSWORD'),
-            host=os.getenv('DB_HOST'),
-            port=os.getenv('DB_PORT')
-        )
-        yield conn
-    except psycopg2.Error as e:
-        print(f"Database connection failed: {e}")
-        raise
-    finally:
-        if conn is not None:
-            conn.close()
+from db import get_db_connection
+
 
 @tool
 async def save_to_memory(user_id: str, content: str, context: str):
@@ -221,8 +205,6 @@ async def save_memory(state: dict):
         result.append(ToolMessage(content=observation, tool_call_id=tool_call_id, type='tool'))
 
     return {"messages": result, "cart": state["cart"]}
-
-
 
 def determine_tool_node(state: GraphsState) -> Literal["product_lookup", "add_product","remove_product","change_quantity", "__end__"]:
     if not state["messages"][-1].tool_calls:
