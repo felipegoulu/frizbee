@@ -18,3 +18,6 @@ run_in_terminal.py
 para_hacer
 
 .graph.py.swp
+
+user_data/sql_queries.sql
+user_data/user_needs.json
