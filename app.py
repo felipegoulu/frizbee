@@ -72,6 +72,33 @@ def get_db_connection():
         if conn is not None:
             conn.close()
 
+# Add this new function to get user preferences
+def get_user_preferences(session_id):
+    try:
+        with get_db_connection() as conn:
+            with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                # Get preferences
+                cur.execute("""
+                    SELECT content, context 
+                    FROM ai_memory 
+                    WHERE user_id = %s 
+                    ORDER BY created_at DESC
+                """, (session_id,))
+                memories = cur.fetchall()
+                
+                if not memories:
+                    return "No hay preferencias guardadas aún."
+                
+                # Format memories into a readable string
+                preferences = "\nPREFERENCIAS DEL USUARIO:\n"
+                for memory in memories:
+                    preferences += f"- {memory['content']} ({memory['context']})\n"
+                
+                return preferences
+    except Exception as e:
+        print(f"Error getting preferences: {e}")
+        return "Error al cargar preferencias."
+
 # Database functions
 def load_chat_history(session_id):
     try:
@@ -181,7 +208,12 @@ with st.sidebar:
                             WHERE session_id = %s
                         """, (session['session_id'],))
                         conn.commit()
-                # If we're deleting the current session, create a new one
+                        cur.execute("""
+                            DELETE FROM ai_memory 
+                            WHERE user_id = %s
+                        """, (session['session_id'],))
+                        conn.commit()                
+                    # If we're deleting the current session, create a new one
                 if session['session_id'] == st.session_state.session_id:
                     st.session_state.session_id = str(uuid.uuid4())
                     st.session_state.messages = []
@@ -191,6 +223,7 @@ with st.sidebar:
     if st.button("Borrar Todo el Historial", type="secondary"):
         with get_db_connection() as conn:
             with conn.cursor() as cur:
+                cur.execute("DELETE FROM chat_messages")
                 cur.execute("DELETE FROM chat_messages")
                 conn.commit()
         st.session_state.session_id = str(uuid.uuid4())
@@ -215,9 +248,13 @@ if user_query:
     save_message(st.session_state.session_id, "user", user_query)
     st.session_state.messages.append(HumanMessage(content=user_query))
 
+    user_preferences = get_user_preferences(st.session_state.session_id)
+
     state = {
         "messages": st.session_state.messages,
         "cart": st.session_state.my_cart,
+        "user_id": st.session_state.session_id,
+        "preferences": user_preferences,
     }
 
     placeholder = st.container()

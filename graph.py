@@ -11,6 +11,10 @@ from langchain_core.messages import BaseMessage, ToolMessage, SystemMessage, AIM
 
 from tools.tool import product_lookup_tool
 
+from contextlib import contextmanager
+import psycopg2
+from psycopg2.extras import RealDictCursor
+
 import os
 from dotenv import load_dotenv
 load_dotenv()
@@ -29,9 +33,54 @@ class CartItem(TypedDict):
 class GraphsState(TypedDict):
     messages: Annotated[list[AnyMessage], add_messages]
     cart: List[CartItem]
+    user_id: str
+    preferences: str
 
 
 graph = StateGraph(GraphsState)
+
+@contextmanager
+def get_db_connection():
+    conn = None
+    try:
+        conn = psycopg2.connect(
+            dbname=os.getenv('DB_NAME'),
+            user=os.getenv('DB_USER'),
+            password=os.getenv('DB_PASSWORD'),
+            host=os.getenv('DB_HOST'),
+            port=os.getenv('DB_PORT')
+        )
+        yield conn
+    except psycopg2.Error as e:
+        print(f"Database connection failed: {e}")
+        raise
+    finally:
+        if conn is not None:
+            conn.close()
+
+@tool
+async def save_to_memory(user_id: str, content: str, context: str):
+    """
+    Save important information about the user to AI's memory.
+    Args:
+        user_id: The user's ID
+        content: The information to remember (what the user said or preference)
+        context: Why this information is important or when it was mentioned
+    """
+    try:
+        with get_db_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    INSERT INTO ai_memory 
+                    (user_id, content, context)
+                    VALUES (%s, %s, %s)
+                    RETURNING id
+                """, (user_id, content, context))
+                conn.commit()
+                
+        return f"Memorizado: {content} (Contexto: {context})"
+    except Exception as e:
+        return f"Error guardando en memoria: {str(e)}"
 
 @tool
 async def add_product(name, quantity, price, link):
@@ -70,10 +119,13 @@ async def change_quantity(name, new_quantity, cart):
     message = f"Product {name} not found in cart"
     return message, cart
 
-# List of tools that will be accessible to the graph via the ToolNode
+# Shopping tools (main flow)
 tools = [product_lookup_tool, add_product, remove_product, change_quantity]
-
 tools_by_name = {tool.name: tool for tool in tools}
+
+# Preferences tools
+preferences_tools = [save_to_memory]
+preferences_tools_by_name = {tool.name: tool for tool in preferences_tools}
 
 model = ChatOpenAI(model="gpt-4o-mini")
 llm = model.bind_tools(tools)
@@ -118,7 +170,6 @@ async def change_quantity(state: dict):
 async def remove_product(state: dict):
     result = []
     tasks = []
-
     for tool_call in state["messages"][-1].tool_calls:
         tool=tools_by_name[tool_call["name"]]
         task= asyncio.create_task(tool.ainvoke(tool_call["args"]))
@@ -152,6 +203,27 @@ async def product_lookup_tool(state: dict):
 
     return {"messages": result, "cart": state["cart"]}
 
+async def save_memory(state: dict):
+    """
+    Node that handles save_to_memory tool calls during preferences collection
+    """ 
+
+    result = []
+    tasks = []
+
+    for tool_call in state["messages"][-1].tool_calls:
+        tool = preferences_tools_by_name[tool_call["name"]]
+        task = asyncio.create_task(tool.ainvoke(tool_call["args"]))
+        tasks.append((task, tool_call["id"]))
+
+    for task, tool_call_id in tasks:
+        observation = await task
+        result.append(ToolMessage(content=observation, tool_call_id=tool_call_id, type='tool'))
+
+    return {"messages": result, "cart": state["cart"]}
+
+
+
 def determine_tool_node(state: GraphsState) -> Literal["product_lookup", "add_product","remove_product","change_quantity", "__end__"]:
     if not state["messages"][-1].tool_calls:
         return "__end__"
@@ -169,90 +241,138 @@ def determine_tool_node(state: GraphsState) -> Literal["product_lookup", "add_pr
     else:
         return "__end__"  # End the conversation if no tool is needed
 
+
+def determine_preferences_tool(state: GraphsState):
+    """
+    Determines next node in preferences flow: either save_memory or end
+    """
+    if not state["messages"][-1].tool_calls:
+        return "__end__"
+    
+    tool_name = state["messages"][-1].tool_calls[0]["name"]
+    return "save_memory" if tool_name == "save_to_memory" else "__end__"   
+
+def determine_initial_node(state:GraphsState):
+    """
+    Use LLM to decide whether to go to add_preferences or shopping node based on the conversation history
+    """
+    system_prompt = SystemMessage(content="""
+    Tu única función es decidir si el usuario necesita configurar preferencias o hacer compras.
+    
+    DEBES RESPONDER ÚNICAMENTE CON UNA DE ESTAS DOS PALABRAS:
+    - "add_preferences"
+    - "shopping"
+    
+    REGLAS:
+    Responde "add" si:
+    - Es una conversación nueva
+    - El usuario quiere configurar preferencias
+    - Menciona información personal nueva
+    - Menciona restricciones o alergias
+    - Falta información del usuario
+    - Si el usuario dice que quiere hacer una compra, pero no hay informacion, deberias ir a add
+    
+    Responde "shopping" si:
+    - Ya hay preferencias y quiere comprar
+    - Pregunta por productos específicos
+    - Quiere ver/modificar su carrito
+    - Ya está comprando
+    
+    Si no sabes que responder, utiliza el mismo que utilizaste anteriormente.
+    
+    si el usuario no sabe que hacer, siempre debes ir al shopping asi el ai shopping le hace preguntas y lo asiste
+    NO AGREGUES NINGÚN OTRO TEXTO O EXPLICACIÓN.
+    RESPONDE ÚNICAMENTE CON UNA DE ESTAS DOS PALABRAS:
+    - "shopping"
+    - "add"
+
+    """)
+
+        # Create a simple model for decision (doesn't need tools)
+    decision_model = ChatOpenAI(
+        model="gpt-4o-mini",
+        temperature=0,
+        max_tokens=1,   # Limitar la longitud de la respuesta
+        presence_penalty=-2.0,  # Desalentar texto adicional
+        frequency_penalty=-2.0  # Desalentar variaciones
+
+    )
+
+    recent_messages = state["messages"][-4:] if len(state["messages"]) > 4 else state["messages"]
+    conversation = [system_prompt] + recent_messages
+    response = decision_model.invoke(conversation)
+    decision = response.content.lower()
+
+    valid_responses = {"add", "shopping"}
+    if decision not in valid_responses:
+        print(f"WARNING: LLM returned invalid response: {decision}")
+        # Por defecto, es más seguro empezar con preferencias
+        return "modelNode"
+
+    if decision == "shopping":
+        decision = "modelNode"
+    if decision =="add":
+        decision = "add_preferences"
+    return decision
+
+def add_preferences(state: GraphsState):
+    """
+    Node that handles saving user preferences and manages preference-related conversation.
+    Returns to shopping node once preferences are collected.
+    """
+    user_id = state["user_id"]
+    system_prompt = SystemMessage(content=f'''
+    Eres un asistente amable que ayuda a recolectar y guardar las preferencias del usuario.
+    
+    El user_id del usuario es {user_id}
+
+    OBJETIVO:
+    - Recolectar información relevante sobre preferencias de compra
+    - Guardar cada preferencia importante usando la herramienta save_to_memory
+    - Mantener una conversación natural y amigable
+    
+    INFORMACIÓN A RECOLECTAR:
+    - Preferencias dietéticas (vegetariano, vegano, etc.)
+    - Alergias o restricciones alimentarias
+    - Tamaño de familia/cantidad usual de compras
+    - Recetas habituales
+    - Postres favoritos
+    - desayuno habitual
+    - Cualquier otra información relevante para compras
+    
+    IMPORTANTE:
+    - Usa save_to_memory para guardar cada preferencia importante
+    - Guarda el contexto de cada preferencia
+    - Confirma la información con el usuario
+
+                                  
+    Debes preguntarle al usuario que quiere haciendo preguntas y dandole ejemplos, debes ser proactivo para obtener la informacion del usuario
+    ''')
+
+    preferences_model = ChatOpenAI(
+        model = "gpt-4o-mini",
+        temperature=0.7
+    ).bind_tools([save_to_memory])
+
+    conversation = [system_prompt] + state["messages"]
+    response = preferences_model.invoke(conversation)
+
+    return {"messages": [response], "cart": state["cart"]}
+
+
+from prompts import get_shopping_assistant_prompt 
 # Core invocation of the model
 def _call_model(state: GraphsState):
     cart_info = f'''\nCarrito actual: {state["cart"]}'''
-    system_prompt = SystemMessage(f'''
-Eres un asistente de compras del supermercado Jumbo que ayuda a realizar la compra semanal. Debes ser conversacional y hacer preguntas personalizadas basadas en las respuestas del usuario.
-
-
-INSTRUCCIONES:
-1. Sigue el orden de las categorías seleccionadas
-2. Para cada categoría:
-   - Haz preguntas abiertas sobre preferencias y hábitos, siempre que hagas una pregunta trata de poner algunos productos que puedan responder a esa pregunta.
-   - Adapta tus siguientes preguntas según las respuestas
-   - Sugiere productos basados en lo que vas aprendiendo del usuario
-   - Haz preguntas de seguimiento relevantes
-   - Trata de hacer la menos cantidad de preguntas posibles, la idea es que el usuario no tenga que escribir mucho
-   - En vez de preguntar que producto prefiere, pregunta si le parece que esta bien si agregas esos productos al carrito o quiere otros
-3. Empieza tu con la categoria que tu quieras
-4. Si el mensaje del usuario es Empieza, debes introducirte y luego empezar por la categoria primera. 
-5. Antes de pasar a la siguiente categoria, pregunta si quiere algun otro producto, mencionando uno que a ti se te ocurra que pueda faltar
-
-
-REGLAS IMPORTANTES:
-1. Adapta las preguntas según:
-   - Las respuestas previas del usuario
-   - Sus restricciones alimentarias
-   - El número de personas
-   - El presupuesto indicado
-
-2. Sé conversacional y natural:
-   - Haz preguntas de seguimiento relevantes
-   - Muestra interés en las preferencias del usuario
-   - Ofrece sugerencias personalizadas
-   - Aprende de las respuestas para hacer mejores recomendaciones
-
-3. Mantén un enfoque útil:
-   - Si el usuario muestra interés en algo específico, profundiza en eso
-   - Si muestra desinterés, pasa a otra subcategoría
-   - Adapta las cantidades según el tamaño del hogar
-   - Considera el presupuesto en tus sugerencias
-
-RECUERDA:
-- No sigas un guion rígido
-- Adapta tus preguntas según la conversación
-- Aprende de las respuestas del usuario
-- Sé flexible y natural en el diálogo
-- Haz preguntas relevantes para entender mejor los gustos y necesidades
-
-
-PROCESO:
-1. Sigue el orden exacto de categorías
-2. Para cada categoría:
-   - Sugiere algunos productos como ejemplos
-   - Deja que el usuario elija libremente qué quiere comprar
-   - No limites al usuario a tus sugerencias
-   - Solo avanza cuando el usuario termine con esa categoría
-3. si usuario le pide un producto (por ejemplo, zanahoria), agrega zanahoria al carrito sin preguntar cual zanahoria quiere
-
-
-IMPORTANTE:
-- Tus sugerencias son solo ejemplos/inspiración
-- El usuario puede elegir cualquier producto, no solo los sugeridos
-- No preguntes "¿cuáles de estos quiere?"
-- Pregunta abiertamente qué quiere comprar de cada categoría
-- Mantén un tono amigable y eficiente
-- No mostrar imagenes
-- El carrito debe tener productos de la base de datos SIEMPRE. Nunca inventar productos!
-
-Para buscar productos del supermercado, debes usar la tool product_lookup_tool. Trata de buscar productos en especificos, si quieres buscar vegetales, trata de buscar los prdouctos usando la tool multiples veces.
-Para agregar productos , debes usar la tool add_products y poner como input el nombre, cantidad, precio, link y el carrito actual. IMPORTANTE: los productos que agregues al carrito deben ser productos que esten en la base de datos con la misma informacion.
-
-Para usar la herramienta, necesitas enviar los productos que debes buscar en la base de datos. La herramienta recuperará esos productos. Busca un producto a la vez. Si la herramienta no recupera la información necesaria, intenta de nuevo hasta que obtengas el producto correcto; nunca inventes productos.
-
-Carrito actual: {cart_info}
-
-GUSTOS DEL USUARIO:
-Me gusta la comida mediterránea, sobre todo las comidas italianas y españolas. Me gusta la pasta italiana, recetas como pasta alla bolognesa, pasta con zucchini y guanciales, pasta alla norma, risotto, etc. Como soy argentino, también me gusta comer mucha carne, me gustan todos los tipicos de carne. Me gustan todos los vegetales y las frutas. 
-En cuanto a las bebidas, me gustan mucho el vino y la cerveza.
-En cuanto a snacks salados, me gustan las papas.
-En cuanto a snacks dulces  me gustan los chocolates amargos.
-De desayuno suelo comer yogurt con frutas y granola o huevos revueltos.
-
-
-          ''')
-
+    user_id = state["user_id"]
+    user_preferences = state["preferences"]
+  
+    prompt_content = get_shopping_assistant_prompt(
+        user_preferences=user_preferences,
+        user_id=user_id,
+        cart_info=cart_info
+    )
+    system_prompt = SystemMessage(content=prompt_content)
     conversation = [system_prompt] + state["messages"] 
     response = llm.invoke(conversation)
 
@@ -267,23 +387,34 @@ De desayuno suelo comer yogurt con frutas y granola o huevos revueltos.
         return {"messages": [AIMessage(content=response.content)], "cart": state["cart"]}
 
 # Define the structure (nodes and directional edges between nodes) of the graph
-graph.add_edge(START, "modelNode")
+#graph.add_edge(START, "")
 graph.add_node("product_lookup", product_lookup_tool)
 graph.add_node("modelNode", _call_model)
 graph.add_node("add_product", add_product)
 graph.add_node("remove_product", remove_product)
 graph.add_node("change_quantity", change_quantity)
+graph.add_node("save_memory", save_memory)
+graph.add_node("add_preferences", add_preferences)
 
 # Add conditional logic to determine the next step based on the state (to continue or to end)
+graph.add_conditional_edges(
+    START,
+    determine_initial_node,  # This function will decide the flow of execution
+)
+
 graph.add_conditional_edges(
     "modelNode",
     determine_tool_node,  # This function will decide the flow of execution
 )
 
+graph.add_conditional_edges(
+    "add_preferences",
+    determine_preferences_tool
+)
 graph.add_edge("product_lookup", "modelNode")
 graph.add_edge("add_product", "modelNode")
 graph.add_edge("remove_product", "modelNode")
 graph.add_edge("change_quantity", "modelNode")
-
+graph.add_edge("save_memory", "add_preferences")
 # Compile the state graph into a runnable object
 graph_runnable = graph.compile()
