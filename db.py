@@ -43,17 +43,37 @@ def get_db_connection():
         if conn is not None:
             pool.putconn(conn)
 
+def complete_cart(user_id):
+    """Mark current cart as completed and create a new one"""
+    with get_db_connection() as conn:
+        with conn.cursor() as cur:
+            # Mark current cart as completed
+            cur.execute("""
+                UPDATE user_cart 
+                SET status = 'completado',
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE user_id = %s AND status = 'en_proceso'
+            """, (user_id,))
+            
+            cur.execute("""
+                INSERT INTO user_cart
+                (user_id, cart_items, status, created_at, updated_at)
+                VALUES 
+                (%s, %s::jsonb, 'en_proceso', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+            """, (user_id, '[]'))
+            
+            conn.commit()
+
 def save_cart(user_id, cart_items):
     with get_db_connection() as conn:
         with conn.cursor() as cur:
             cur.execute("""
-                INSERT INTO user_cart (user_id, cart_items, updated_at)
-                VALUES (%s, %s, CURRENT_TIMESTAMP)
-                ON CONFLICT (user_id) 
-                DO UPDATE SET 
-                    cart_items = %s,
+      UPDATE user_cart 
+                SET cart_items = %s,
                     updated_at = CURRENT_TIMESTAMP
-            """, (user_id, Json(cart_items), Json(cart_items)))
+                WHERE user_id = %s 
+                AND status = 'en_proceso'
+            """, (Json(cart_items), user_id))
             conn.commit()
 
 def load_cart(user_id):
@@ -61,8 +81,19 @@ def load_cart(user_id):
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
             cur.execute("""
                 SELECT cart_items FROM user_cart 
-                WHERE user_id = %s
+                WHERE user_id = %s AND status = 'en_proceso'
             """, (user_id,))
             result = cur.fetchone()
-            return result['cart_items'] if result else []
 
+            if not result:
+                # Si no existe un carrito activo, crear uno nuevo
+                cur.execute("""
+                    INSERT INTO user_cart
+                    (user_id, cart_items, status, created_at, updated_at)
+                    VALUES 
+                    (%s, %s::jsonb, 'en_proceso', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+                    RETURNING cart_items
+                """, (user_id, '[]'))
+                result = cur.fetchone()
+            
+            return result['cart_items']

@@ -16,10 +16,10 @@ from contextlib import contextmanager
 load_dotenv()
 os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
 
-# Add custom CSS
+# Actualizar el CSS personalizado
 st.markdown("""
     <style>
-    /* Make the session buttons look better */
+    /* Estilos existentes */
     .stButton button {
         text-align: left;
         height: auto;
@@ -27,17 +27,66 @@ st.markdown("""
         white-space: pre-wrap;
     }
     
-    /* Style for the preview text */
     .stButton button p {
         font-size: 0.8em;
         margin: 0;
         opacity: 0.8;
     }
 
-    /* Style for delete buttons */
     [data-testid="column"]:nth-of-type(2) .stButton button {
         text-align: center;
         padding: 10px 5px;
+    }
+
+    /* Nuevos estilos */
+    .cart-button {
+        background: linear-gradient(to right, #FF4B4B, #FF6B6B);
+        color: white;
+        border-radius: 10px;
+        padding: 15px;
+        margin: 10px 0;
+        text-align: center;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .cart-count {
+        background: white;
+        color: #FF4B4B;
+        border-radius: 50%;
+        padding: 2px 8px;
+        margin-left: 8px;
+        font-weight: bold;
+    }
+
+    .sidebar-title {
+        font-size: 1.5em;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .new-chat-button {
+        border: 2px solid #4CAF50;
+        color: #4CAF50;
+        background: white;
+        border-radius: 8px;
+        transition: all 0.3s;
+    }
+
+    .new-chat-button:hover {
+        background: #4CAF50;
+        color: white;
+    }
+
+    .history-item {
+        background: #f7f7f7;
+        border-radius: 8px;
+        margin: 5px 0;
+        transition: all 0.2s;
+    }
+
+    .history-item:hover {
+        background: #e9e9e9;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -138,10 +187,25 @@ from db import load_cart
 if "my_cart" not in st.session_state:
     st.session_state.my_cart = load_cart(st.session_state.session_id)
 
+
+
+
 # Sidebar with conversation management
 with st.sidebar:
-    st.title("Conversaciones")
-    
+
+
+    # Botón de completar compra mejorado
+    if st.session_state.my_cart:
+        cart_items_count = len(st.session_state.my_cart)
+        
+        if st.button("Completar Compra", type="primary", use_container_width=True, key="complete_purchase"):
+            from db import complete_cart
+            complete_cart(st.session_state.session_id)
+            st.success("¡Compra completada con éxito! 🎉")
+            st.rerun()
+        st.divider()
+
+    st.markdown('<h2 class="sidebar-title">💬 Conversaciones</h2>', unsafe_allow_html=True)
     # Add "New Chat" button at the top
     if st.button("Nueva Conversación"):
         new_session_id = str(uuid.uuid4())
