@@ -36,11 +36,9 @@ class GraphsState(TypedDict):
     user_id: str
     preferences: str
 
-
 graph = StateGraph(GraphsState)
 
 from db import get_db_connection
-
 
 @tool
 async def save_to_memory(user_id: str, content: str, context: str):
@@ -150,7 +148,6 @@ async def change_quantity(state: dict):
 
     return {"messages": result, "cart": cart}
 
-
 async def remove_product(state: dict):
     result = []
     tasks = []
@@ -222,7 +219,6 @@ def determine_tool_node(state: GraphsState) -> Literal["product_lookup", "add_pr
         return "change_quantity"
     else:
         return "__end__"  # End the conversation if no tool is needed
-
 
 def determine_preferences_tool(state: GraphsState):
     """

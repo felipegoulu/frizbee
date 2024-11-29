@@ -57,7 +57,6 @@ BOT_AVATAR = "🤖"
 
 from db import get_db_connection
 
-
 # Add this new function to get user preferences
 def get_user_preferences(session_id):
     try:
@@ -135,8 +134,9 @@ if "session_id" not in st.session_state:
 if "messages" not in st.session_state:
     st.session_state.messages = load_chat_history(st.session_state.session_id)
 
+from db import load_cart
 if "my_cart" not in st.session_state:
-    st.session_state.my_cart = []
+    st.session_state.my_cart = load_cart(st.session_state.session_id)
 
 # Sidebar with conversation management
 with st.sidebar:
@@ -199,6 +199,12 @@ with st.sidebar:
                             WHERE user_id = %s
                         """, (session['session_id'],))
                         conn.commit()                
+                        cur.execute("""
+                            DELETE FROM user_cart 
+                            WHERE user_id = %s
+                        """, (session['session_id'],))
+                        conn.commit()                
+
                     # If we're deleting the current session, create a new one
                 if session['session_id'] == st.session_state.session_id:
                     st.session_state.session_id = str(uuid.uuid4())
@@ -211,6 +217,7 @@ with st.sidebar:
             with conn.cursor() as cur:
                 cur.execute("DELETE FROM chat_messages")
                 cur.execute("DELETE FROM chat_messages")
+                cur.execute("DELETE FROM user_cart")
                 conn.commit()
         st.session_state.session_id = str(uuid.uuid4())
         st.session_state.messages = []
@@ -236,6 +243,8 @@ if user_query:
 
     user_preferences = get_user_preferences(st.session_state.session_id)
 
+    st.session_state.my_cart = load_cart(st.session_state.session_id)
+
     state = {
         "messages": st.session_state.messages,
         "cart": st.session_state.my_cart,
@@ -255,3 +264,5 @@ if user_query:
 
     st.session_state.messages.append(response["messages"])
     st.session_state.my_cart = response["cart"]
+    from db import save_cart
+    save_cart(st.session_state.session_id, st.session_state.my_cart)
