@@ -45,24 +45,16 @@ async def save_to_memory(user_id: str, content: str, context: str):
     """
     Save important information about the user to AI's memory.
     Args:
-        user_id: The user's ID
+        user_id: The user's ID (must be a valid UUID)
         content: The information to remember (what the user said or preference)
         context: Why this information is important or when it was mentioned
     """
     try:
-        with get_db_connection() as conn:
-            with conn.cursor() as cur:
-                cur.execute("""
-                    INSERT INTO ai_memory 
-                    (user_id, content, context)
-                    VALUES (%s, %s, %s)
-                    RETURNING id
-                """, (user_id, content, context))
-                conn.commit()
-                
-        return f"Memorizado: {content} (Contexto: {context})"
+        preference = f"{content}|{context}"        
+        return preference
+
     except Exception as e:
-        return f"Error guardando en memoria: {str(e)}"
+        return f"ERROR|{str(e)}"
 
 @tool
 async def add_product(name, quantity, price, link):
@@ -79,27 +71,16 @@ async def add_product(name, quantity, price, link):
     return message, cart
 
 @tool
-async def remove_product(name,cart):
+async def remove_product(name):
     ''' Remove a product from the cart'''
-
-    for i in range(len(cart)):
-        if cart[i]["name"] == name:
-            cart.pop(i)
-        
     message = f"Removed {name} from the cart"
-
-    return message, cart
+    return message, name
 
 @tool
-async def change_quantity(name, new_quantity, cart):
+async def change_quantity(name, new_quantity):
     ''' Change the quantiy of a product inside the cart'''
-    for i in range(len(cart)):
-        if cart[i]["name"] == name:
-            cart[i]["quantity"] = new_quantity
-            message = f"Changed te queantity of {name} to {new_quantity}"
-            return message, cart
-    message = f"Product {name} not found in cart"
-    return message, cart
+    message = f"Changed the quantity of {name} to {new_quantity}"
+    return message, {"name": name, "quantity": new_quantity}   
 
 # Shopping tools (main flow)
 tools = [product_lookup_tool, add_product, remove_product, change_quantity]
@@ -114,75 +95,43 @@ llm = model.bind_tools(tools)
 
 import asyncio
 
-async def add_product(state: dict):
+async def handle_shopping_tools(state: dict):
     result = []
     tasks = []
+    current_cart = state["cart"].copy()
 
-    print(f'''state[cart] : {state["cart"]}''')
+    # Crear todas las tareas primero para ejecución paralela
     for tool_call in state["messages"][-1].tool_calls:
-        tool=tools_by_name[tool_call["name"]]
-        task= asyncio.create_task(tool.ainvoke(tool_call["args"]))
-        print(tool_call["args"])
-        tasks.append((task, tool_call["id"]))
-
-    for task, tool_call_id in tasks:
-        observation, cart = await task
-        result.append(ToolMessage(content=observation, tool_call_id=tool_call_id, type='tool'))
-        print(f"cart: {cart}")
-        state["cart"].append(cart)
-
-    return {"messages": result, "cart": state["cart"]}
-
-async def change_quantity(state: dict):
-    result = []
-    tasks = []
-
-    for tool_call in state["messages"][-1].tool_calls:
-        tool=tools_by_name[tool_call["name"]]
-        task= asyncio.create_task(tool.ainvoke(tool_call["args"]))
-        tasks.append((task, tool_call["id"]))
-
-    for task, tool_call_id in tasks:
-        observation, cart = await task
-        result.append(ToolMessage(content=observation, tool_call_id=tool_call_id, type='tool'))
-
-    return {"messages": result, "cart": cart}
-
-async def remove_product(state: dict):
-    result = []
-    tasks = []
-    for tool_call in state["messages"][-1].tool_calls:
-        tool=tools_by_name[tool_call["name"]]
-        task= asyncio.create_task(tool.ainvoke(tool_call["args"]))
-        tasks.append((task, tool_call["id"]))
-
-    for task, tool_call_id in tasks:
-        observation, cart = await task
-        result.append(ToolMessage(content=observation, tool_call_id=tool_call_id, type='tool'))
-
-    return {"messages": result, "cart": cart}
-
-async def product_lookup_tool(state: dict):
-    result = []
-
-    # Create a list of tasks for parallel execution
-    tasks = []
-
-    for tool_call in state["messages"][-1].tool_calls:
-        # Get the tool from the dictionary
-        tool = tools_by_name[tool_call["name"]]
-        # Create an async task for each tool invocation
+        tool_name = tool_call["name"]
+        tool = tools_by_name[tool_name]
         task = asyncio.create_task(tool.ainvoke(tool_call["args"]))
-        # Append the task along with the tool_call_id for later use
-        tasks.append((task, tool_call["id"]))
+        tasks.append((task, tool_call["id"], tool_name))
 
-    # Wait for all tasks to complete (parallel execution)
-    for task, tool_call_id in tasks:
-        observation = await task
-        # Collect the results as ToolMessage objects
-        result.append(ToolMessage(content=observation, tool_call_id=tool_call_id, type='tool'))
+    # Esperar todas las tareas y procesar resultados
+    for task, tool_call_id, tool_name in tasks:
+        if tool_name == "product_lookup_tool":
+            observation = await task
+            result.append(ToolMessage(content=observation, tool_call_id=tool_call_id, type='tool'))
+        
+        elif tool_name == "add_product":
+            message, cart_item = await task
+            result.append(ToolMessage(content=message, tool_call_id=tool_call_id, type='tool'))
+            current_cart.append(cart_item)
+        
+        elif tool_name == "remove_product":
+            message, product_name = await task
+            current_cart = [item for item in current_cart if item["name"] != product_name]
+            result.append(ToolMessage(content=message, tool_call_id=tool_call_id, type='tool'))
 
-    return {"messages": result, "cart": state["cart"]}
+
+        elif tool_name == "change_quantity":
+            message, change_info = await task
+            for item in current_cart:
+                if item["name"] == change_info["name"]:
+                    item["quantity"] = change_info["quantity"]
+            result.append(ToolMessage(content=message,  tool_call_id=tool_call_id, type='tool'))
+
+    return {"messages": result, "cart": current_cart}
 
 async def save_memory(state: dict):
     """
@@ -191,6 +140,7 @@ async def save_memory(state: dict):
 
     result = []
     tasks = []
+    preferences = state["preferences"]
 
     for tool_call in state["messages"][-1].tool_calls:
         tool = preferences_tools_by_name[tool_call["name"]]
@@ -201,22 +151,34 @@ async def save_memory(state: dict):
         observation = await task
         result.append(ToolMessage(content=observation, tool_call_id=tool_call_id, type='tool'))
 
-    return {"messages": result, "cart": state["cart"]}
+        # Procesar respuesta estructurada
+        if "|" in observation and not observation.startswith("ERROR"):
+            content, context = observation.split("|")
+            new_preference = f"- {content} ({context})"
+            preferences = f"{preferences}\n{new_preference}"
 
-def determine_tool_node(state: GraphsState) -> Literal["product_lookup", "add_product","remove_product","change_quantity", "__end__"]:
+
+    return {
+        "messages": result, 
+        "cart": state["cart"],
+        "preferences": preferences  # Asegúrate de que esto esté presente
+    }
+
+def determine_tool_node(state: GraphsState) -> Literal["handle_shopping_tools", "__end__"]:
     if not state["messages"][-1].tool_calls:
         return "__end__"
     
     tool_name = state["messages"][-1].tool_calls[0]["name"]
     
-    if tool_name == "product_lookup_tool":
-        return "product_lookup"
-    if tool_name == "add_product":
-        return "add_product"
-    if tool_name =="remove_product":
-        return "remove_product"
-    if tool_name =="change_quantity":
-        return "change_quantity"
+    shopping_tools = {
+        "product_lookup_tool",
+        "add_product",
+        "remove_product",
+        "change_quantity"
+    }
+
+    if tool_name in shopping_tools: 
+        return "handle_shopping_tools"
     else:
         return "__end__"  # End the conversation if no tool is needed
 
@@ -237,32 +199,42 @@ def determine_initial_node(state:GraphsState):
     system_prompt = SystemMessage(content="""
     Tu única función es decidir si el usuario necesita configurar preferencias o hacer compras.
     
-    DEBES RESPONDER ÚNICAMENTE CON UNA DE ESTAS DOS PALABRAS:
-    - "add_preferences"
-    - "shopping"
+    DEBES RESPONDER ÚNICAMENTE CON UNA DE ESTAS PALABRAS:
+    - "long" (preferencias a largo plazo)
+    - "shopping" (proceso de compra)
+    - "end" (finalizar compra)
     
     REGLAS:
-    Responde "add" si:
+    Responde "long" si:
     - Es una conversación nueva
     - El usuario quiere configurar preferencias
     - Menciona información personal nueva
     - Menciona restricciones o alergias
     - Falta información del usuario
-    - Si el usuario dice que quiere hacer una compra, pero no hay informacion, deberias ir a add
+    - SI el usuario quiere agregar productos al carrito, RESPONDE shopping SIEMPRE!
     
     Responde "shopping" si:
-    - Ya hay preferencias y quiere comprar
-    - Pregunta por productos específicos
-    - Quiere ver/modificar su carrito
-    - Ya está comprando
+    - El usuario menciona productos específicos
+    - Solicita buscar o agregar productos al carrito
+    - Quiere modificar cantidades en el carrito
+    - Ya está en proceso activo de compra
+    - El usuario necesita ayuda o sugerencias de compra  
+    - el usuario quiere agregar, borrar modificar productos de su carrito
+
+    Response "end" si:
+    - El usuario dice explícitamente que quiere completar/finalizar la compra
+    - El usuario quiere pagar
+    - El usuario dice que ya terminó de comprar                              
+    - Si la respuesta es "end", la compra se compra, e inmediadamente el usuario hace el pago.
     
     Si no sabes que responder, utiliza el mismo que utilizaste anteriormente.
     
     si el usuario no sabe que hacer, siempre debes ir al shopping asi el ai shopping le hace preguntas y lo asiste
     NO AGREGUES NINGÚN OTRO TEXTO O EXPLICACIÓN.
-    RESPONDE ÚNICAMENTE CON UNA DE ESTAS DOS PALABRAS:
+    RESPONDE ÚNICAMENTE CON UNA DE ESTAS PALABRAS:
     - "shopping"
-    - "add"
+    - "long"
+    - "end"
 
     """)
 
@@ -278,20 +250,20 @@ def determine_initial_node(state:GraphsState):
 
     recent_messages = state["messages"][-4:] if len(state["messages"]) > 4 else state["messages"]
     conversation = [system_prompt] + recent_messages
-    response = decision_model.invoke(conversation)
-    decision = response.content.lower()
 
-    valid_responses = {"add", "shopping"}
-    if decision not in valid_responses:
-        print(f"WARNING: LLM returned invalid response: {decision}")
-        # Por defecto, es más seguro empezar con preferencias
-        return "modelNode"
+    valid_responses = {"long", "shopping", "end"}
+    decision = None
+
+    while decision not in valid_responses:
+        response = decision_model.invoke(conversation)
+        decision = response.content.lower()
 
     if decision == "shopping":
-        decision = "modelNode"
-    if decision =="add":
-        decision = "add_preferences"
-    return decision
+        return "modelNode"
+    if decision =="long":
+        return "add_preferences"
+    if decision == "end":
+        return "complete_purchase"
 
 def add_preferences(state: GraphsState):
     """
@@ -300,11 +272,13 @@ def add_preferences(state: GraphsState):
     """
     user_id = state["user_id"]
     system_prompt = SystemMessage(content=f'''
-    Eres un asistente amable que ayuda a recolectar y guardar las preferencias del usuario.
-    
+    Eres uno de los dos asistentes AI que trabajan juntos en frizbee para ayudar en el proceso de compras en el supermercado jumbo.
+    Tu única función es recolectar y guardar las preferencias del usuario de manera proactiva. No debes realizar ninguna otra tarea.
+
     El user_id del usuario es {user_id}
 
     OBJETIVO:
+    - Explicarle al usuario que es frizbee
     - Recolectar información relevante sobre preferencias de compra
     - Guardar cada preferencia importante usando la herramienta save_to_memory
     - Mantener una conversación natural y amigable
@@ -322,9 +296,17 @@ def add_preferences(state: GraphsState):
     - Usa save_to_memory para guardar cada preferencia importante
     - Guarda el contexto de cada preferencia
     - Confirma la información con el usuario
+    - Sé proactivo: haz preguntas al usuario para obtener la información necesaria
 
-                                  
     Debes preguntarle al usuario que quiere haciendo preguntas y dandole ejemplos, debes ser proactivo para obtener la informacion del usuario
+
+    Una vez que terminas de recolectar las preferencias, debes preguntale al usuario sobre el tipo de compra que desea hacer:
+      * "¿Qué tipo de compra te gustaría hacer hoy? Por ejemplo:
+         - ¿Compra semanal completa?
+         - ¿Ingredientes para alguna receta específica?
+         - ¿Productos básicos?
+         - ¿Algo específico que necesites?"
+
     ''')
 
     preferences_model = ChatOpenAI(
@@ -335,10 +317,10 @@ def add_preferences(state: GraphsState):
     conversation = [system_prompt] + state["messages"]
     response = preferences_model.invoke(conversation)
 
-    return {"messages": [response], "cart": state["cart"]}
-
+    return {"messages": [response], "cart": state["cart"], "preferences": state["preferences"]}
 
 from prompts import get_shopping_assistant_prompt 
+
 # Core invocation of the model
 def _call_model(state: GraphsState):
     cart_info = f'''\nCarrito actual: {state["cart"]}'''
@@ -348,7 +330,7 @@ def _call_model(state: GraphsState):
     prompt_content = get_shopping_assistant_prompt(
         user_preferences=user_preferences,
         user_id=user_id,
-        cart_info=cart_info
+        cart_info=cart_info,
     )
     system_prompt = SystemMessage(content=prompt_content)
     conversation = [system_prompt] + state["messages"] 
@@ -364,15 +346,35 @@ def _call_model(state: GraphsState):
     else:
         return {"messages": [AIMessage(content=response.content)], "cart": state["cart"]}
 
+def complete_purchase(state: GraphsState):
+    """Node that handles completing the purchase"""
+    from db import complete_cart
+    complete_cart(state["user_id"])
+    #make_summary(state["user_id"])
+    model = ChatOpenAI(
+        model = "gpt-4o-mini",
+        streaming=True
+    )
+
+    system_message = SystemMessage(content="""
+    La compra se ha completado con éxito. 
+    Genera un mensaje amable agradeciendo al usuario por su compra y despidiéndote.
+                                   """)
+
+    response = model.invoke([system_message])
+
+    return {
+            "messages": [response],
+            "cart": []  # Clear the cart after purchase
+    }
+  
 # Define the structure (nodes and directional edges between nodes) of the graph
 #graph.add_edge(START, "")
-graph.add_node("product_lookup", product_lookup_tool)
 graph.add_node("modelNode", _call_model)
-graph.add_node("add_product", add_product)
-graph.add_node("remove_product", remove_product)
-graph.add_node("change_quantity", change_quantity)
+graph.add_node("handle_shopping_tools", handle_shopping_tools)
 graph.add_node("save_memory", save_memory)
 graph.add_node("add_preferences", add_preferences)
+graph.add_node("complete_purchase", complete_purchase)
 
 # Add conditional logic to determine the next step based on the state (to continue or to end)
 graph.add_conditional_edges(
@@ -389,10 +391,8 @@ graph.add_conditional_edges(
     "add_preferences",
     determine_preferences_tool
 )
-graph.add_edge("product_lookup", "modelNode")
-graph.add_edge("add_product", "modelNode")
-graph.add_edge("remove_product", "modelNode")
-graph.add_edge("change_quantity", "modelNode")
+
+graph.add_edge("handle_shopping_tools", "modelNode")
 graph.add_edge("save_memory", "add_preferences")
 # Compile the state graph into a runnable object
 graph_runnable = graph.compile()

@@ -97,3 +97,45 @@ def load_cart(user_id):
                 result = cur.fetchone()
             
             return result['cart_items']
+
+
+def load_preferences(user_id: str) -> str:
+    """
+    Load user preferences from the database.
+    Args:
+        user_id: The user's ID
+    Returns:
+        String containing user preferences
+    """
+    with get_db_connection() as conn:
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            cur.execute("""
+                SELECT content 
+                FROM ai_memory 
+                WHERE user_id = %s 
+                ORDER BY created_at DESC
+                LIMIT 1
+            """, (user_id,))
+            memory = cur.fetchone()
+            
+            if not memory:
+                # Insert a new row if no preferences are found
+                cur.execute("""
+                    INSERT INTO ai_memory (user_id, content, created_at, updated_at)
+                    VALUES (%s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+                    RETURNING content
+                """, (user_id, ''))
+                memory = cur.fetchone()                
+            return memory['content']
+
+
+def save_preferences(user_id, preferences):
+    with get_db_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+      UPDATE ai_memory 
+                SET content = %s,
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE user_id = %s 
+            """, (preferences, user_id))
+            conn.commit()

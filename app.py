@@ -1,3 +1,7 @@
+import sys
+sys.setrecursionlimit(1500)
+
+
 from dotenv import load_dotenv
 import streamlit as st
 from langchain_core.messages import AIMessage, HumanMessage
@@ -115,7 +119,7 @@ def get_user_preferences(session_id):
                 cur.execute("""
                     SELECT content, context 
                     FROM ai_memory 
-                    WHERE user_id = %s 
+                    WHERE user_id = %s AND "long_term"
                     ORDER BY created_at DESC
                 """, (session_id,))
                 memories = cur.fetchall()
@@ -131,7 +135,31 @@ def get_user_preferences(session_id):
                 return preferences
     except Exception as e:
         print(f"Error getting preferences: {e}")
-        return "Error al cargar preferencias."
+        return "No hay preferencias del usuario."
+
+def get_short_term_preferences(session_id):
+    try:
+        with get_db_connection() as conn:
+            with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                # Get preferences
+                cur.execute("""
+                    SELECT content, context 
+                    FROM ai_memory 
+                    WHERE user_id = %s  AND type = "short_term"
+                    ORDER BY created_at DESC
+                    LIMIT 1
+                """, (session_id,))
+                memory = cur.fetchone()
+                
+                if not memory:
+                    return "No hay objetivos guardados aún."
+
+                # Return just the last memory with timestamp
+                return f"OBJETIVO DEL USUARIO:\n- {memory['content']} ({memory['context']}) [Creado: {memory['created_at']}]"
+             
+    except Exception as e:
+        print(f"Error getting preferences: {e}")
+        return "No hay objetivos del usuario."
 
 # Database functions
 def load_chat_history(session_id):
@@ -183,28 +211,15 @@ if "session_id" not in st.session_state:
 if "messages" not in st.session_state:
     st.session_state.messages = load_chat_history(st.session_state.session_id)
 
-from db import load_cart
+from db import load_cart, load_preferences
 if "my_cart" not in st.session_state:
     st.session_state.my_cart = load_cart(st.session_state.session_id)
 
-
-
+if "user_preferences" not in st.session_state:
+    st.session_state.user_preferences = load_preferences(st.session_state.session_id)
 
 # Sidebar with conversation management
 with st.sidebar:
-
-
-    # Botón de completar compra mejorado
-    if st.session_state.my_cart:
-        cart_items_count = len(st.session_state.my_cart)
-        
-        if st.button("Completar Compra", type="primary", use_container_width=True, key="complete_purchase"):
-            from db import complete_cart
-            complete_cart(st.session_state.session_id)
-            st.success("¡Compra completada con éxito! 🎉")
-            st.rerun()
-        st.divider()
-
     st.markdown('<h2 class="sidebar-title">💬 Conversaciones</h2>', unsafe_allow_html=True)
     # Add "New Chat" button at the top
     if st.button("Nueva Conversación"):
@@ -280,7 +295,7 @@ with st.sidebar:
         with get_db_connection() as conn:
             with conn.cursor() as cur:
                 cur.execute("DELETE FROM chat_messages")
-                cur.execute("DELETE FROM chat_messages")
+                cur.execute("DELETE FROM ai_memory")
                 cur.execute("DELETE FROM user_cart")
                 conn.commit()
         st.session_state.session_id = str(uuid.uuid4())
@@ -305,15 +320,18 @@ if user_query:
     save_message(st.session_state.session_id, "user", user_query)
     st.session_state.messages.append(HumanMessage(content=user_query))
 
-    user_preferences = get_user_preferences(st.session_state.session_id)
+    #user_preferences = get_user_preferences(st.session_state.session_id)
+    short_term_preferences = get_short_term_preferences(st.session_state.session_id)
 
     st.session_state.my_cart = load_cart(st.session_state.session_id)
+    st.session_state.user_preferences = load_preferences(st.session_state.session_id)
 
     state = {
         "messages": st.session_state.messages,
         "cart": st.session_state.my_cart,
         "user_id": st.session_state.session_id,
-        "preferences": user_preferences,
+        "preferences": st.session_state.user_preferences,
+        "objective": short_term_preferences,
     }
 
     placeholder = st.container()
@@ -325,8 +343,11 @@ if user_query:
         "assistant",
         response["messages"].content
     )
-
     st.session_state.messages.append(response["messages"])
+
     st.session_state.my_cart = response["cart"]
-    from db import save_cart
+    from db import save_cart, save_preferences
     save_cart(st.session_state.session_id, st.session_state.my_cart)
+
+    st.session_state.user_preferences = response["preferences"]
+    save_preferences(st.session_state.session_id, st.session_state.user_preferences)
