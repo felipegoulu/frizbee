@@ -184,5 +184,29 @@ def add_summary_db(user_id, summary_content):
                 VALUES (%s, %s, 'summary', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
             """, (user_id, summary_content))
             conn.commit()  # Agregamos el commit nuevamente
-            print(summary_content)
 
+def load_summaries(user_id):
+    with get_db_connection() as conn:
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            cur.execute("""
+                SELECT content, created_at FROM ai_memory 
+                WHERE user_id = %s AND type = 'summary'
+                ORDER BY created_at DESC
+            """, (user_id,))
+            results = cur.fetchall() # list of summaries
+            conn.commit()
+            
+            return results
+
+def load_old_carts(user_id):
+    with get_db_connection() as conn:
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            cur.execute("""
+                SELECT cart_items, updated_at FROM user_cart 
+                WHERE user_id = %s AND status = 'completado' AND cart_items != '[]'::jsonb
+                ORDER BY updated_at DESC
+            """, (user_id,))
+            results = cur.fetchall() # list of summaries
+            conn.commit()
+            
+            return results

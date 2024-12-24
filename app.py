@@ -186,7 +186,7 @@ if "session_id" not in st.session_state:
 if "messages" not in st.session_state:
     st.session_state.messages = load_chat_history(st.session_state.session_id)
 
-from db import load_cart, load_preferences
+from db import load_cart, load_preferences, load_summaries, load_old_carts
 if "my_cart" not in st.session_state:
     st.session_state.my_cart = load_cart(st.session_state.session_id)
 
@@ -298,12 +298,16 @@ if user_query:
 
     st.session_state.my_cart = load_cart(st.session_state.session_id)
     st.session_state.user_preferences = load_preferences(st.session_state.session_id)
+    st.session_state.summaries = load_summaries(st.session_state.session_id)
+    st.session_state.old_carts = load_old_carts(st.session_state.session_id)
 
     state = {
         "messages": st.session_state.messages,
         "cart": st.session_state.my_cart,
         "user_id": st.session_state.session_id,
         "preferences": st.session_state.user_preferences,
+        "summaries": st.session_state.summaries,
+        "old_carts": st.session_state.old_carts
     }
 
     placeholder = st.container()

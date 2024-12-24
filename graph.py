@@ -35,6 +35,8 @@ class GraphsState(TypedDict):
     cart: List[CartItem]
     user_id: str
     preferences: str
+    summaries: str
+    old_carts: str
 
 graph = StateGraph(GraphsState)
 
@@ -325,11 +327,15 @@ def _call_model(state: GraphsState):
     cart_info = f'''\nCarrito actual: {state["cart"]}'''
     user_id = state["user_id"]
     user_preferences = state["preferences"]
-  
+    summaries= state["summaries"]
+    old_carts= state["old_carts"]
+
     prompt_content = get_shopping_assistant_prompt(
         user_preferences=user_preferences,
         user_id=user_id,
         cart_info=cart_info,
+        summaries=summaries,
+        old_carts=old_carts,
     )
     system_prompt = SystemMessage(content=prompt_content)
     conversation = [system_prompt] + state["messages"] 
