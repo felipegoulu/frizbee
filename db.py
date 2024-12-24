@@ -18,6 +18,7 @@ from psycopg2.extras import RealDictCursor
 import streamlit as st
 import json
 from psycopg2.extras import Json
+from langchain_core.messages import AIMessage, HumanMessage
 
 @st.cache_resource
 def init_connection_pool():
@@ -62,6 +63,19 @@ def complete_cart(user_id):
                 (%s, %s::jsonb, 'en_proceso', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
             """, (user_id, '[]'))
             
+            conn.commit()
+
+def change_messages_status(user_id):
+    """Mark chat messages as completed"""
+    with get_db_connection() as conn:
+        with conn.cursor() as cur:
+            # Mark chat messages as completed
+            cur.execute("""
+                UPDATE chat_messages
+                SET status = 'completado',
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE session_id = %s AND status = 'en_proceso'
+            """, (user_id,)) 
             conn.commit()
 
 def save_cart(user_id, cart_items):
@@ -112,7 +126,7 @@ def load_preferences(user_id: str) -> str:
             cur.execute("""
                 SELECT content 
                 FROM ai_memory 
-                WHERE user_id = %s 
+                WHERE user_id = %s AND type = 'preferences'
                 ORDER BY created_at DESC
                 LIMIT 1
             """, (user_id,))
@@ -121,11 +135,12 @@ def load_preferences(user_id: str) -> str:
             if not memory:
                 # Insert a new row if no preferences are found
                 cur.execute("""
-                    INSERT INTO ai_memory (user_id, content, created_at, updated_at)
-                    VALUES (%s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+                    INSERT INTO ai_memory (user_id, content, type, created_at, updated_at)
+                    VALUES (%s, %s, 'preferences',CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
                     RETURNING content
                 """, (user_id, ''))
                 memory = cur.fetchone()                
+                conn.commit()
             return memory['content']
 
 
@@ -133,9 +148,41 @@ def save_preferences(user_id, preferences):
     with get_db_connection() as conn:
         with conn.cursor() as cur:
             cur.execute("""
-      UPDATE ai_memory 
+            UPDATE ai_memory 
                 SET content = %s,
                     updated_at = CURRENT_TIMESTAMP
-                WHERE user_id = %s 
+                WHERE user_id = %s AND type = 'preferences' 
             """, (preferences, user_id))
             conn.commit()
+
+# Database functions
+def load_messages_en_proceso(session_id):
+    try:
+        with get_db_connection() as conn:
+            with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                cur.execute("""
+                    SELECT role, content FROM chat_messages 
+                    WHERE session_id = %s AND status = 'en_proceso' 
+                    ORDER BY created_at
+                """, (session_id,))
+                messages = cur.fetchall()
+                
+                return [
+                    AIMessage(content=msg['content']) if msg['role'] == 'assistant'
+                    else HumanMessage(content=msg['content'])
+                    for msg in messages
+                ]
+    except Exception as e:
+        st.error(f"Error loading chat history: {e}")
+        return []
+
+def add_summary_db(user_id, summary_content):
+    with get_db_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                INSERT INTO ai_memory (user_id, content, type, created_at, updated_at)
+                VALUES (%s, %s, 'summary', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+            """, (user_id, summary_content))
+            conn.commit()  # Agregamos el commit nuevamente
+            print(summary_content)
+

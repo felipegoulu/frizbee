@@ -11,12 +11,14 @@ async def invoke_our_graph(state, BOT_AVATAR):
         chat_container = st.container()
 
     async for event in graph_runnable.astream_events(state, version="v2"):
+        #if "parent_ids" in event:
+        #    continue
         kind = event["event"]  
         if kind == "on_chat_model_stream":
+
             chunk = event["data"]["chunk"].content  
 
-            if  chunk_count < 1: # con esto borro el chunk de nodo de decision (tengo que ponerlo en 2)
-                chunk_count += 1
+            if event.get("metadata", {}).get("langgraph_node") in ["create_summary", "__start__"]:
                 continue
 
             final_text += chunk  

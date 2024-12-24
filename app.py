@@ -1,7 +1,6 @@
 import sys
 sys.setrecursionlimit(1500)
 
-
 from dotenv import load_dotenv
 import streamlit as st
 from langchain_core.messages import AIMessage, HumanMessage
@@ -137,30 +136,6 @@ def get_user_preferences(session_id):
         print(f"Error getting preferences: {e}")
         return "No hay preferencias del usuario."
 
-def get_short_term_preferences(session_id):
-    try:
-        with get_db_connection() as conn:
-            with conn.cursor(cursor_factory=RealDictCursor) as cur:
-                # Get preferences
-                cur.execute("""
-                    SELECT content, context 
-                    FROM ai_memory 
-                    WHERE user_id = %s  AND type = "short_term"
-                    ORDER BY created_at DESC
-                    LIMIT 1
-                """, (session_id,))
-                memory = cur.fetchone()
-                
-                if not memory:
-                    return "No hay objetivos guardados aún."
-
-                # Return just the last memory with timestamp
-                return f"OBJETIVO DEL USUARIO:\n- {memory['content']} ({memory['context']}) [Creado: {memory['created_at']}]"
-             
-    except Exception as e:
-        print(f"Error getting preferences: {e}")
-        return "No hay objetivos del usuario."
-
 # Database functions
 def load_chat_history(session_id):
     try:
@@ -186,9 +161,9 @@ def save_message(session_id, role, content):
     with get_db_connection() as conn:
         with conn.cursor() as cur:
             cur.execute("""
-                INSERT INTO chat_messages (session_id, role, content, created_at)
-                VALUES (%s, %s, %s, %s)
-            """, (session_id, role, content, datetime.now()))
+                INSERT INTO chat_messages (session_id, role, content, created_at, status)
+                VALUES (%s, %s, %s, %s, %s)
+            """, (session_id, role, content, datetime.now(), "en_proceso"))
             conn.commit()
 
 def get_all_sessions():
@@ -320,8 +295,6 @@ if user_query:
     save_message(st.session_state.session_id, "user", user_query)
     st.session_state.messages.append(HumanMessage(content=user_query))
 
-    #user_preferences = get_user_preferences(st.session_state.session_id)
-    short_term_preferences = get_short_term_preferences(st.session_state.session_id)
 
     st.session_state.my_cart = load_cart(st.session_state.session_id)
     st.session_state.user_preferences = load_preferences(st.session_state.session_id)
@@ -331,7 +304,6 @@ if user_query:
         "cart": st.session_state.my_cart,
         "user_id": st.session_state.session_id,
         "preferences": st.session_state.user_preferences,
-        "objective": short_term_preferences,
     }
 
     placeholder = st.container()

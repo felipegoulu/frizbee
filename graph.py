@@ -3,7 +3,7 @@ import json
 
 from langgraph.prebuilt import ToolNode
 from langchain_core.tools import tool, StructuredTool
-from langgraph.graph import START, StateGraph
+from langgraph.graph import START, END, StateGraph
 from langgraph.graph.message import AnyMessage, add_messages
 from langchain_community.utilities import DuckDuckGoSearchAPIWrapper
 from langchain_openai import ChatOpenAI
@@ -38,7 +38,6 @@ class GraphsState(TypedDict):
 
 graph = StateGraph(GraphsState)
 
-from db import get_db_connection
 
 @tool
 async def save_to_memory(user_id: str, content: str, context: str):
@@ -263,7 +262,7 @@ def determine_initial_node(state:GraphsState):
     if decision =="long":
         return "add_preferences"
     if decision == "end":
-        return "complete_purchase"
+        return "create_summary"
 
 def add_preferences(state: GraphsState):
     """
@@ -346,11 +345,19 @@ def _call_model(state: GraphsState):
     else:
         return {"messages": [AIMessage(content=response.content)], "cart": state["cart"]}
 
-def complete_purchase(state: GraphsState):
+def create_summary_node(state: GraphsState):
     """Node that handles completing the purchase"""
-    from db import complete_cart
+
+    from db import complete_cart, change_messages_status
     complete_cart(state["user_id"])
-    #make_summary(state["user_id"])
+    make_summary(state["user_id"]) #el summary lo hago con los en proceso, y luego los cambio a completado
+    change_messages_status(state["user_id"]) # con esto pongo status en completado.
+
+    return {
+            "messages": [''],
+    }
+
+def complete_purchase(state: GraphsState):
     model = ChatOpenAI(
         model = "gpt-4o-mini",
         streaming=True
@@ -367,13 +374,58 @@ def complete_purchase(state: GraphsState):
             "messages": [response],
             "cart": []  # Clear the cart after purchase
     }
-  
+
+
+def make_summary(user_id):
+    """
+    Retrieve user data from the database and generate a summary using AI.
+    Args:
+        user_id: The user's ID
+    Returns:
+        A summary of the user's data en la tabla ai_memory
+    """
+    from db import load_messages_en_proceso, add_summary_db
+    messages = load_messages_en_proceso(user_id)
+
+    model = ChatOpenAI(
+        model = "gpt-4o-mini",
+        streaming=False
+    )
+
+    system_message = SystemMessage(content=f"""
+    Analiza la siguiente conversación entre un usuario y el asistente de compras de Jumbo:
+    Extrae ÚNICAMENTE las preferencias del usuario en formato bullet points.
+
+    Conversación:
+    {messages}
+
+    REGLAS:
+    - Un guión por preferencia
+    - Solo incluir preferencias alimenticias, de compra o restricciones
+    - Ser conciso y directo
+    - No incluir explicaciones ni texto adicional
+    - No incluir recomendaciones
+    
+    Formato de respuesta:
+    - preferencia 1
+    - preferencia 2
+    - etc.
+                                   """)
+
+    response = model.invoke([system_message])         
+    summary_content = response.content
+    summary_content = str(response.content).strip()
+
+
+    add_summary_db(user_id, summary_content) # añade el sumary a la base de datos
+
 # Define the structure (nodes and directional edges between nodes) of the graph
 #graph.add_edge(START, "")
 graph.add_node("modelNode", _call_model)
 graph.add_node("handle_shopping_tools", handle_shopping_tools)
 graph.add_node("save_memory", save_memory)
 graph.add_node("add_preferences", add_preferences)
+graph.add_node("create_summary", create_summary_node)
 graph.add_node("complete_purchase", complete_purchase)
 
 # Add conditional logic to determine the next step based on the state (to continue or to end)
@@ -394,5 +446,7 @@ graph.add_conditional_edges(
 
 graph.add_edge("handle_shopping_tools", "modelNode")
 graph.add_edge("save_memory", "add_preferences")
+graph.add_edge("create_summary", "complete_purchase")
+graph.add_edge("complete_purchase", END)
 # Compile the state graph into a runnable object
 graph_runnable = graph.compile()
