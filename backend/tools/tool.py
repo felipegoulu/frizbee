@@ -28,8 +28,16 @@ import asyncio
 import pickle
 
 async def load_bm25_model():
-    with open('tools/bm25_model.pkl', 'rb') as f:
-        bm25 = pickle.load(f)  # Load asynchronously
+    #current_dir = os.path.dirname(os.path.abspath(__file__))
+
+    #model_path = os.path.join(current_dir, 'bm25_model.pkl')
+    #with open('backend/tools/bm25_model.pkl', 'rb') as f:
+    #    bm25 = pickle.load(f)  # Load asynchronously
+    #return bm25
+    base_path = "/Users/felipegoulu/projects/activos/jumbo_ai"
+    model_path = os.path.join(base_path, 'backend/tools/bm25_model.pkl')
+    with open(model_path, 'rb') as f:
+        bm25 = pickle.load(f)
     return bm25
 
 import asyncio

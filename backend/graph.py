@@ -9,7 +9,7 @@ from langchain_community.utilities import DuckDuckGoSearchAPIWrapper
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import BaseMessage, ToolMessage, SystemMessage, AIMessage
 
-from tools.tool import product_lookup_tool
+from backend.tools.tool import product_lookup_tool
 
 from contextlib import contextmanager
 import psycopg2
@@ -39,7 +39,6 @@ class GraphsState(TypedDict):
     old_carts: str
 
 graph = StateGraph(GraphsState)
-
 
 @tool
 async def save_to_memory(user_id: str, content: str, context: str):
@@ -124,7 +123,6 @@ async def handle_shopping_tools(state: dict):
             current_cart = [item for item in current_cart if item["name"] != product_name]
             result.append(ToolMessage(content=message, tool_call_id=tool_call_id, type='tool'))
 
-
         elif tool_name == "change_quantity":
             message, change_info = await task
             for item in current_cart:
@@ -157,7 +155,6 @@ async def save_memory(state: dict):
             content, context = observation.split("|")
             new_preference = f"- {content} ({context})"
             preferences = f"{preferences}\n{new_preference}"
-
 
     return {
         "messages": result, 
@@ -197,74 +194,63 @@ def determine_initial_node(state:GraphsState):
     """
     Use LLM to decide whether to go to add_preferences or shopping node based on the conversation history
     """
-    system_prompt = SystemMessage(content="""
-    Tu única función es decidir si el usuario necesita configurar preferencias o hacer compras.
-    
-    DEBES RESPONDER ÚNICAMENTE CON UNA DE ESTAS PALABRAS:
-    - "long" (preferencias a largo plazo)
-    - "shopping" (proceso de compra)
-    - "end" (finalizar compra)
-    
-    REGLAS:
-    Responde "long" si:
-    - Es una conversación nueva
-    - El usuario quiere configurar preferencias
-    - Menciona información personal nueva
-    - Menciona restricciones o alergias
-    - Falta información del usuario
-    - SI el usuario quiere agregar productos al carrito, RESPONDE shopping SIEMPRE!
-    
-    Responde "shopping" si:
-    - El usuario menciona productos específicos
-    - Solicita buscar o agregar productos al carrito
-    - Quiere modificar cantidades en el carrito
-    - Ya está en proceso activo de compra
-    - El usuario necesita ayuda o sugerencias de compra  
-    - el usuario quiere agregar, borrar modificar productos de su carrito
+    from backend.prompts import get_determine_initial_node_prompt
 
-    Response "end" si:
-    - El usuario dice explícitamente que quiere completar/finalizar la compra
-    - El usuario quiere pagar
-    - El usuario dice que ya terminó de comprar                              
-    - Si la respuesta es "end", la compra se compra, e inmediadamente el usuario hace el pago.
-    
-    Si no sabes que responder, utiliza el mismo que utilizaste anteriormente.
-    
-    si el usuario no sabe que hacer, siempre debes ir al shopping asi el ai shopping le hace preguntas y lo asiste
-    NO AGREGUES NINGÚN OTRO TEXTO O EXPLICACIÓN.
-    RESPONDE ÚNICAMENTE CON UNA DE ESTAS PALABRAS:
-    - "shopping"
-    - "long"
-    - "end"
+    old_carts = state["old_carts"]
+    cart = state["cart"]
 
-    """)
+    if old_carts and not cart:
+        print("modelnode")
+        return "modelNode"
+        
+    elif old_carts and cart:
+        prompt = "prompt2"
+        print("prompt2")
+        
+    elif not old_carts and not cart:
+        prompt = "prompt3"
+        print('promtp3')
+
+    elif not old_carts and cart:
+        prompt = "prompt1"
+        print('prompt1')
+
+    # prompt puede ser prompt1, prompt2, prompt3
+    prompt_content= get_determine_initial_node_prompt(prompt)
+    system_prompt = SystemMessage(content=prompt_content)
 
         # Create a simple model for decision (doesn't need tools)
     decision_model = ChatOpenAI(
         model="gpt-4o-mini",
         temperature=0,
-        max_tokens=1,   # Limitar la longitud de la respuesta
-        presence_penalty=-2.0,  # Desalentar texto adicional
-        frequency_penalty=-2.0  # Desalentar variaciones
-
     )
 
     recent_messages = state["messages"][-4:] if len(state["messages"]) > 4 else state["messages"]
     conversation = [system_prompt] + recent_messages
 
-    valid_responses = {"long", "shopping", "end"}
     decision = None
 
-    while decision not in valid_responses:
-        response = decision_model.invoke(conversation)
-        decision = response.content.lower()
+    from backend.prompts import get_function_call_prompt
+    tools = get_function_call_prompt(prompt) 
 
-    if decision == "shopping":
-        return "modelNode"
-    if decision =="long":
-        return "add_preferences"
-    if decision == "end":
-        return "create_summary"
+    response = decision_model.invoke(
+        conversation, 
+        tools = tools,
+        tool_choice={"type": "function", "function": {"name": "determine_next_node"}}  # Added tool_choice
+        )
+
+    # Extract the decision from the function call
+    tool_calls = response.additional_kwargs.get('tool_calls', [])
+    if tool_calls and len(tool_calls) > 0:
+        function_args = tool_calls[0].get('function', {}).get('arguments', '{}')
+        decision = json.loads(function_args).get('decision')
+        print(decision)
+        if decision == "shopping":
+            return "modelNode"
+        if decision =="long":
+            return "add_preferences"
+        if decision == "end":
+            return "create_summary"
 
 def add_preferences(state: GraphsState):
     """
@@ -320,7 +306,7 @@ def add_preferences(state: GraphsState):
 
     return {"messages": [response], "cart": state["cart"], "preferences": state["preferences"]}
 
-from prompts import get_shopping_assistant_prompt 
+from backend.prompts import get_shopping_assistant_prompt 
 
 # Core invocation of the model
 def _call_model(state: GraphsState):
@@ -354,7 +340,7 @@ def _call_model(state: GraphsState):
 def create_summary_node(state: GraphsState):
     """Node that handles completing the purchase"""
 
-    from db import complete_cart, change_messages_status
+    from backend.db import complete_cart, change_messages_status
     complete_cart(state["user_id"])
     make_summary(state["user_id"]) #el summary lo hago con los en proceso, y luego los cambio a completado
     change_messages_status(state["user_id"]) # con esto pongo status en completado.
@@ -390,7 +376,7 @@ def make_summary(user_id):
     Returns:
         A summary of the user's data en la tabla ai_memory
     """
-    from db import load_messages_en_proceso, add_summary_db
+    from backend.db import load_messages_en_proceso, add_summary_db
     messages = load_messages_en_proceso(user_id)
 
     model = ChatOpenAI(

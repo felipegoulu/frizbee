@@ -101,13 +101,13 @@ def download_nltk_resources():
    
 download_nltk_resources()
 
-from astream_events_handler import invoke_our_graph
+from web_frontend.astream_events_handler import invoke_our_graph
 
 # Constants
 USER_AVATAR = "🧑🏻"
 BOT_AVATAR = "🤖"
 
-from db import get_db_connection
+from backend.db import get_db_connection
 
 # Add this new function to get user preferences
 def get_user_preferences(session_id):
@@ -186,7 +186,7 @@ if "session_id" not in st.session_state:
 if "messages" not in st.session_state:
     st.session_state.messages = load_chat_history(st.session_state.session_id)
 
-from db import load_cart, load_preferences, load_summaries, load_old_carts
+from backend.db import load_cart, load_preferences, load_summaries, load_old_carts
 if "my_cart" not in st.session_state:
     st.session_state.my_cart = load_cart(st.session_state.session_id)
 
@@ -322,7 +322,7 @@ if user_query:
     st.session_state.messages.append(response["messages"])
 
     st.session_state.my_cart = response["cart"]
-    from db import save_cart, save_preferences
+    from backend.db import save_cart, save_preferences
     save_cart(st.session_state.session_id, st.session_state.my_cart)
 
     st.session_state.user_preferences = response["preferences"]

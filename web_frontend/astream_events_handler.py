@@ -1,6 +1,13 @@
 from langchain_core.messages import AIMessage
 import streamlit as st
-from graph import graph_runnable
+
+import os
+import sys
+
+
+
+from backend.graph import graph_runnable
+
 
 async def invoke_our_graph(state, BOT_AVATAR): 
     final_text = ""  # Accumulates the text from the model's response

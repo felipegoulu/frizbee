@@ -210,3 +210,36 @@ def load_old_carts(user_id):
             conn.commit()
             
             return results
+
+from datetime import datetime
+
+def save_message(session_id, role, content):
+    with get_db_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                INSERT INTO chat_messages (session_id, role, content, created_at, status)
+                VALUES (%s, %s, %s, %s, %s)
+            """, (session_id, role, content, datetime.now(), "en_proceso"))
+            conn.commit()
+
+# Database functions
+def load_chat_history(session_id):
+    try:
+        with get_db_connection() as conn:
+            with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                cur.execute("""
+                    SELECT role, content FROM chat_messages 
+                    WHERE session_id = %s 
+                    ORDER BY created_at
+                """, (session_id,))
+                messages = cur.fetchall()
+                
+                return [
+                    AIMessage(content=msg['content']) if msg['role'] == 'assistant'
+                    else HumanMessage(content=msg['content'])
+                    for msg in messages
+                ]
+    except Exception as e:
+        st.error(f"Error loading chat history: {e}")
+        return []
+
