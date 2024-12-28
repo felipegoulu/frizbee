@@ -1,11 +1,13 @@
-def get_shopping_assistant_prompt(user_preferences, user_id, cart_info, summaries, old_carts):
+def get_shopping_assistant_prompt(user_preferences, user_id, summaries, old_carts):
     return f'''
 Eres un asistente de compras del supermercado Jumbo que ayuda a realizar la compra semanal. 
+Tu estas encargado de realizar el carrito de compras, mientras que otro agente está encargado de realizar el proceso de compra y de pagar.
+NUNCA ENVIES UN CODIGO ni hagas el proceso de compra final
+Si el usuario te pide que hagas la compra, solamente muestrale el carrito. NO LE ENVIES UN CODIGO NUNCA!!!
 
 Preferencias del usuario: {user_preferences}
 ID del usuario: {user_id}
-Carrito actual: {cart_info}
-Carritos comprados anteriormente: {old_carts}
+Ultimo carrito comprado: {old_carts}
 Resumen de conversaciones anteriores: {summaries}
 
 Eres uno de los dos asistentes AI que trabajan juntos en frizbee para ayudar en el proceso de compras en el supermercado jumbo.
@@ -38,7 +40,7 @@ INSTRUCCIONES
 SECUENCIA OBLIGATORIA:
 1. Buscar → product_lookup_tool
 2. Verificar → ¿Producto encontrado?
-3. Si encontrado → usar add_product con datos exactos
+3. Si encontrado → lo puedes agregar al carrito
 4. Si no encontrado → buscar alternativas
 
 EJEMPLOS DE BÚSQUEDAS:
@@ -90,7 +92,7 @@ IMPORTANTE:
 - Pregunta abiertamente qué quiere comprar de cada categoría
 - Mantén un tono amigable y eficiente
 - No mostrar imagenes
-- El carrito debe tener productos de la base de datos SIEMPRE. Nunca inventar productos!
+- EL CARRITO DEBE TENER PRODUCTOS DE LA BASE DE DATOS SIEMPRE. NUNCA INVENTAR PRODUCTOS!
 
 REGLAS IMPORTANTES:
 1. Adapta las sugerencias según preferencias y presupuesto del usuario
@@ -98,13 +100,10 @@ REGLAS IMPORTANTES:
 3. No limites al usuario a tus sugerencias
 4. NUNCA inventes productos ni información
 5. No mostrar imágenes
-6. Cuando muestres el carrito, haz muesrta el precio total. Haz el calculo con la data en carrito actual antes mencionada, y recuerda utilizar las cantidades en el calculo
+6. Cuando le muestres el carrito al usuario, SIEMPRE debes mostrar el nombre, precio, cantidad, link para cada producto y al final el precio final total. 
 
-USO DE HERRAMIENTAS:
+USO DE HERRAMIENTA:
 - product_lookup_tool: OBLIGATORIO antes de sugerir/agregar productos
-- add_product: SOLO con información exacta de product_lookup_tool
-- remove_product: Para eliminar productos del carrito
-- change_quantity: Para modificar cantidades
 
 '''
 
@@ -180,52 +179,17 @@ def get_determine_initial_node_prompt(prompt):
     - "shopping"
     - "end"
     ''' 
-
-   prompt3 = '''    
-   Tu única función es decidir si el usuario necesita configurar preferencias o hacer compras.
-    
-    DEBES RESPONDER ÚNICAMENTE CON UNA DE ESTAS PALABRAS:
-    - "long" (preferencias a largo plazo)
-    - "shopping" (proceso de compra)
-    
-    REGLAS:
-    Responde "long" si:
-    - Es una conversación nueva
-    - El usuario quiere configurar preferencias
-    - Menciona información personal nueva
-    - Menciona restricciones o alergias
-    - Falta información del usuario
-    - SI el usuario quiere agregar productos al carrito, RESPONDE shopping SIEMPRE!
-    
-    Responde "shopping" si:
-    - El usuario menciona productos específicos
-    - Solicita buscar o agregar productos al carrito
-    - Quiere modificar cantidades en el carrito
-    - Ya está en proceso activo de compra
-    - El usuario necesita ayuda o sugerencias de compra  
-    - el usuario quiere agregar, borrar modificar productos de su carrito
-    
-    si el usuario no sabe que hacer, siempre debes ir al shopping asi el ai shopping le hace preguntas y lo asiste
-    NO AGREGUES NINGÚN OTRO TEXTO O EXPLICACIÓN.
-    RESPONDE ÚNICAMENTE CON UNA DE ESTAS PALABRAS:
-    - "shopping"
-    - "long"
-    '''
    
    if prompt == 'prompt1':
       return prompt1
    elif prompt == 'prompt2':
       return prompt2
-   elif prompt == 'prompt3':
-      return prompt3
 
 def get_function_call_prompt(prompt):
    if prompt == 'prompt1':
       enum = ["shopping", "long", "end"]
    elif prompt == 'prompt2':
       enum = ["shopping", "end"]
-   elif prompt == 'prompt3':
-      enum = ["shopping", "long"]
 
    tools = [
       {

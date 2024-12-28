@@ -82,13 +82,14 @@ def save_cart(user_id, cart_items):
     with get_db_connection() as conn:
         with conn.cursor() as cur:
             cur.execute("""
-      UPDATE user_cart 
-                SET cart_items = %s,
-                    updated_at = CURRENT_TIMESTAMP
-                WHERE user_id = %s 
-                AND status = 'en_proceso'
-            """, (Json(cart_items), user_id))
+                INSERT INTO user_cart
+                (user_id, cart_items, status, created_at, updated_at)
+                VALUES 
+                (%s, %s::jsonb, 'completado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+                RETURNING cart_items
+            """, (user_id, cart_items))
             conn.commit()
+            
 
 def load_cart(user_id):
     with get_db_connection() as conn:
@@ -213,13 +214,13 @@ def load_old_carts(user_id):
 
 from datetime import datetime
 
-def save_message(session_id, role, content):
+def save_message(session_id, role, content, msg_id):
     with get_db_connection() as conn:
         with conn.cursor() as cur:
             cur.execute("""
-                INSERT INTO chat_messages (session_id, role, content, created_at, status)
-                VALUES (%s, %s, %s, %s, %s)
-            """, (session_id, role, content, datetime.now(), "en_proceso"))
+                INSERT INTO chat_messages (session_id, role, content, created_at, status, msg_id)
+                VALUES (%s, %s, %s, %s, %s, %s)
+            """, (session_id, role, content, datetime.now(), "en_proceso", msg_id))
             conn.commit()
 
 # Database functions
@@ -243,3 +244,78 @@ def load_chat_history(session_id):
         st.error(f"Error loading chat history: {e}")
         return []
 
+# Database functions
+def check_duplicated(session_id, msg_id):
+    try:
+        with get_db_connection() as conn:
+            with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                cur.execute("""
+                    SELECT session_id FROM chat_messages 
+                    WHERE session_id = %s and msg_id = %s 
+                """, (session_id,msg_id))
+                messages = cur.fetchone()
+                
+                return messages is not None # Retorna True si hay un duplicado 
+                
+    except Exception as e:
+        st.error(f"Error loading chat history: {e}")
+        return []
+
+
+def update_key(session_id, key):
+    try:
+        with get_db_connection() as conn:
+            with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                cur.execute("""
+                    UPDATE keys
+                    SET updated_at = CURRENT_TIMESTAMP, key= %s
+                    WHERE user_id = %s 
+                """, (key, session_id))
+
+                if cur.rowcount == 0:
+                    # Si no existe la clave, crear una nueva fila
+                    cur.execute("""
+                        INSERT INTO keys (user_id, key,created_at, updated_at)
+                        VALUES (%s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+                        RETURNING key
+                    """, (session_id, key))  # Cambia 'default_key_value' según sea necesario
+                    conn.commit()
+                
+    except Exception as e:
+        st.error(f"Error loading chat history: {e}")
+        return []
+
+
+def load_key(user_id):
+    try:
+        with get_db_connection() as conn:
+            with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                cur.execute("""
+                    SELECT key FROM keys
+                    WHERE user_id = %s 
+                """, (user_id,))
+                key = cur.fetchone()
+                
+                return key 
+                
+    except Exception as e:
+        st.error(f"Error loading chat history: {e}")
+        return []
+
+
+def load_key_message(user_id):
+    try:
+        with get_db_connection() as conn:
+            with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                cur.execute("""
+                    SELECT cart FROM keys
+                    WHERE user_id = %s 
+                """, (user_id,))
+                key = cur.fetchone()
+                
+                return key 
+                
+    except Exception as e:
+        st.error(f"Error loading chat history: {e}")
+        return []
+    

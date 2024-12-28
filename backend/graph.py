@@ -24,19 +24,14 @@ os.environ["LANGSMITH_API_KEY"] = os.getenv("LANGCHAIN_API_KEY")
 os.environ["LANGCHAIN_PROJECT"] = os.getenv("LANGCHAIN_PROJECT")
 os.environ["LANGCHAIN_TRACING_V2"] = os.getenv("LANGCHAIN_TRACING_V2")
 
-class CartItem(TypedDict):
-    name: str
-    quantity: str
-    price: str
-    link: str
 
 class GraphsState(TypedDict):
     messages: Annotated[list[AnyMessage], add_messages]
-    cart: List[CartItem]
     user_id: str
     preferences: str
     summaries: str
     old_carts: str
+    key: str
 
 graph = StateGraph(GraphsState)
 
@@ -56,34 +51,8 @@ async def save_to_memory(user_id: str, content: str, context: str):
     except Exception as e:
         return f"ERROR|{str(e)}"
 
-@tool
-async def add_product(name, quantity, price, link):
-    ''' Gets product name with price and quantity and adds them to the cart'''
-    cart = {
-        "name": name,
-        "quantity": quantity,
-        "price": price,
-        "link": link
-    }
-
-    message = f"Added {name} to the cart"
-
-    return message, cart
-
-@tool
-async def remove_product(name):
-    ''' Remove a product from the cart'''
-    message = f"Removed {name} from the cart"
-    return message, name
-
-@tool
-async def change_quantity(name, new_quantity):
-    ''' Change the quantiy of a product inside the cart'''
-    message = f"Changed the quantity of {name} to {new_quantity}"
-    return message, {"name": name, "quantity": new_quantity}   
-
 # Shopping tools (main flow)
-tools = [product_lookup_tool, add_product, remove_product, change_quantity]
+tools = [product_lookup_tool]
 tools_by_name = {tool.name: tool for tool in tools}
 
 # Preferences tools
@@ -98,7 +67,6 @@ import asyncio
 async def handle_shopping_tools(state: dict):
     result = []
     tasks = []
-    current_cart = state["cart"].copy()
 
     # Crear todas las tareas primero para ejecución paralela
     for tool_call in state["messages"][-1].tool_calls:
@@ -109,28 +77,10 @@ async def handle_shopping_tools(state: dict):
 
     # Esperar todas las tareas y procesar resultados
     for task, tool_call_id, tool_name in tasks:
-        if tool_name == "product_lookup_tool":
-            observation = await task
-            result.append(ToolMessage(content=observation, tool_call_id=tool_call_id, type='tool'))
-        
-        elif tool_name == "add_product":
-            message, cart_item = await task
-            result.append(ToolMessage(content=message, tool_call_id=tool_call_id, type='tool'))
-            current_cart.append(cart_item)
-        
-        elif tool_name == "remove_product":
-            message, product_name = await task
-            current_cart = [item for item in current_cart if item["name"] != product_name]
-            result.append(ToolMessage(content=message, tool_call_id=tool_call_id, type='tool'))
-
-        elif tool_name == "change_quantity":
-            message, change_info = await task
-            for item in current_cart:
-                if item["name"] == change_info["name"]:
-                    item["quantity"] = change_info["quantity"]
-            result.append(ToolMessage(content=message,  tool_call_id=tool_call_id, type='tool'))
-
-    return {"messages": result, "cart": current_cart}
+        observation = await task
+        result.append(ToolMessage(content=observation, tool_call_id=tool_call_id, type='tool'))
+   
+    return {"messages": result}
 
 async def save_memory(state: dict):
     """
@@ -158,8 +108,7 @@ async def save_memory(state: dict):
 
     return {
         "messages": result, 
-        "cart": state["cart"],
-        "preferences": preferences  # Asegúrate de que esto esté presente
+        "preferences": preferences  
     }
 
 def determine_tool_node(state: GraphsState) -> Literal["handle_shopping_tools", "__end__"]:
@@ -194,26 +143,24 @@ def determine_initial_node(state:GraphsState):
     """
     Use LLM to decide whether to go to add_preferences or shopping node based on the conversation history
     """
+    input = state["messages"][-1]    
+    input = input.content
+
+    key = state["key"]
+    key = key['key']
+    print(key)
+    print(input)
+    if input != '' and input == key:
+        return "create_summary"
+
     from backend.prompts import get_determine_initial_node_prompt
 
     old_carts = state["old_carts"]
-    cart = state["cart"]
 
-    if old_carts and not cart:
-        print("modelnode")
-        return "modelNode"
-        
-    elif old_carts and cart:
+    if old_carts:
         prompt = "prompt2"
-        print("prompt2")
-        
-    elif not old_carts and not cart:
-        prompt = "prompt3"
-        print('promtp3')
-
-    elif not old_carts and cart:
+    else:
         prompt = "prompt1"
-        print('prompt1')
 
     # prompt puede ser prompt1, prompt2, prompt3
     prompt_content= get_determine_initial_node_prompt(prompt)
@@ -244,13 +191,13 @@ def determine_initial_node(state:GraphsState):
     if tool_calls and len(tool_calls) > 0:
         function_args = tool_calls[0].get('function', {}).get('arguments', '{}')
         decision = json.loads(function_args).get('decision')
-        print(decision)
+        print(f"decision: {decision}")
         if decision == "shopping":
             return "modelNode"
         if decision =="long":
             return "add_preferences"
         if decision == "end":
-            return "create_summary"
+            return "create_key"
 
 def add_preferences(state: GraphsState):
     """
@@ -304,38 +251,34 @@ def add_preferences(state: GraphsState):
     conversation = [system_prompt] + state["messages"]
     response = preferences_model.invoke(conversation)
 
-    return {"messages": [response], "cart": state["cart"], "preferences": state["preferences"]}
+    return {"messages": [response], "preferences": state["preferences"]}
 
 from backend.prompts import get_shopping_assistant_prompt 
 
 # Core invocation of the model
 def _call_model(state: GraphsState):
-    cart_info = f'''\nCarrito actual: {state["cart"]}'''
     user_id = state["user_id"]
     user_preferences = state["preferences"]
     summaries= state["summaries"]
-    old_carts= state["old_carts"]
+    old_carts= state["old_carts"][-1]
 
     prompt_content = get_shopping_assistant_prompt(
         user_preferences=user_preferences,
         user_id=user_id,
-        cart_info=cart_info,
         summaries=summaries,
         old_carts=old_carts,
     )
     system_prompt = SystemMessage(content=prompt_content)
-    conversation = [system_prompt] + state["messages"] 
+    conversation = [system_prompt] + state["messages"][-20:] 
     response = llm.invoke(conversation)
-
     # If it has tool_calls, return the response directly. I need all the answer because it has the tool call name.
     if hasattr(response, 'tool_calls') and response.tool_calls:
         return {
-            "messages": [response],  # Return the original message with tool_calls
-            "cart": state["cart"]
+            "messages": [response]  # Return the original message with tool_calls
         }
     
     else:
-        return {"messages": [AIMessage(content=response.content)], "cart": state["cart"]}
+        return {"messages": [AIMessage(content=response.content)]}
 
 def create_summary_node(state: GraphsState):
     """Node that handles completing the purchase"""
@@ -352,9 +295,53 @@ def create_summary_node(state: GraphsState):
 def complete_purchase(state: GraphsState):
     model = ChatOpenAI(
         model = "gpt-4o-mini",
-        streaming=True
+        model_kwargs={"response_format": {"type": "json_object"}}
     )
 
+
+    system_message= SystemMessage(content=f"""
+    Genera el carrito de compras en formato JSON. 
+    El JSON debe incluir los siguientes campos para cada producto: 
+    SIMPRE PONER EL CARRITO
+    - nombre
+    - precio
+    - link
+
+    Ejemplo de formato JSON: 
+    {{"carrito": [ 
+        {{
+            "nombre": "Producto 1",
+            "precio": 10.99,
+            "link": "http://ejemplo.com/producto1"
+        }},
+        {{
+            "nombre": "Producto 2",
+            "precio": 5.49,
+            "link": "http://ejemplo.com/producto2"
+        }}
+        ]
+    }}
+
+    Genera la respuesta en formato json.
+
+    """)
+
+   # Invocar el modelo para obtener el carrito en formato JSON
+    json_cart_response = model.invoke([system_message] + state["messages"][-20:])
+    json_cart = json_cart_response.content  # Suponiendo que el contenido es el JSON generado
+
+    import json
+    json_cart = json.loads(json_cart)
+    json_cart = json.dumps(json_cart)
+
+    print(json_cart)
+
+    from backend.db import save_cart
+    save_cart(state["user_id"], json_cart)
+
+    model = ChatOpenAI(
+        model = "gpt-4o-mini"
+    )
     system_message = SystemMessage(content="""
     La compra se ha completado con éxito. 
     Genera un mensaje amable agradeciendo al usuario por su compra y despidiéndote.
@@ -362,9 +349,11 @@ def complete_purchase(state: GraphsState):
 
     response = model.invoke([system_message])
 
+    from backend.db import update_key
+    update_key(state["user_id"], "")
+
     return {
-            "messages": [response],
-            "cart": []  # Clear the cart after purchase
+            "messages": [response]
     }
 
 
@@ -411,12 +400,51 @@ def make_summary(user_id):
 
     add_summary_db(user_id, summary_content) # añade el sumary a la base de datos
 
+def create_key(state: GraphsState):
+    model = ChatOpenAI(
+        model = "gpt-4o-mini",
+        streaming=True
+    )
+
+    import random
+
+    # Generate a random 3-digit number
+    random_number = random.randint(100, 999)
+
+    # Convert it to a string
+    random_number_string = str(random_number)
+
+    system_message = SystemMessage(content=f"""
+    Debes mostrarle al usuario su carrito para finalizar la compra. 
+    Muestra el precio, cantidad y link para cada producto, así como el precio total.
+                                   
+    Si el el carrito está vacio, indícale que no hay productos y que no se puede realizar la compra. No confundir carritos de compras anteriores con la compra actual.
+                                   
+    Si el carrito tiene productos, dile al usuario que para completar la compra debe escribir el siguiente codigo: {random_number_string}
+
+    SIEMPRE USA EL CODIGO {random_number_string}, sin importar los codigos en mensajes anteriores.
+
+    SIEMPRE DEBES MOSTRAR EL CARRITO QUE VA A COMPRAR EL USUARIO
+                                   """)
+
+    conversation = [system_message] + state["messages"][-20:]
+    response = model.invoke(conversation)
+
+    from backend.db import update_key 
+    
+    update_key(state["user_id"], random_number_string)
+
+    return {
+            "messages": [response]
+    }
+
 # Define the structure (nodes and directional edges between nodes) of the graph
 #graph.add_edge(START, "")
 graph.add_node("modelNode", _call_model)
 graph.add_node("handle_shopping_tools", handle_shopping_tools)
 graph.add_node("save_memory", save_memory)
 graph.add_node("add_preferences", add_preferences)
+graph.add_node("create_key", create_key)
 graph.add_node("create_summary", create_summary_node)
 graph.add_node("complete_purchase", complete_purchase)
 

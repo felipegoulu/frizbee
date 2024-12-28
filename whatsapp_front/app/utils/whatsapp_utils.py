@@ -25,10 +25,6 @@ def get_text_message_input(recipient, text):
         }
     )
 
-
-
-
-
 def send_message(data):
     headers = {
         "Content-type": "application/json",
@@ -82,12 +78,21 @@ def process_whatsapp_message(body):
     print(f"nombre: {name}")
     from app.services.openai_service import generate_response  # Add this import
     print(message["id"])
-    # OpenAI Integration
-    response = generate_response(message_body, wa_id, name)
-    response = process_text_for_whatsapp(response)
 
-    data = get_text_message_input(current_app.config["RECIPIENT_WAID"], response)
-    send_message(data)
+    msg_id = message["id"]
+
+    # antes de generate_response debo verificar que msg_id no exista, si ya existe debo hacer nada.
+    from backend.db import check_duplicated
+    is_duplicated = check_duplicated(wa_id, msg_id)
+
+    if is_duplicated:
+        return 'duplicado'
+    else:
+        print("no duplicado")
+        response = generate_response(message_body, wa_id,msg_id)
+        response = process_text_for_whatsapp(response)
+        data = get_text_message_input(current_app.config["RECIPIENT_WAID"], response)
+        send_message(data)
 
 
 def is_valid_whatsapp_message(body):
