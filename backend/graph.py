@@ -260,7 +260,7 @@ def _call_model(state: GraphsState):
     user_id = state["user_id"]
     user_preferences = state["preferences"]
     summaries= state["summaries"]
-    old_carts= state["old_carts"][-1]
+    old_carts= state["old_carts"][-1] if state["old_carts"] else ""
 
     prompt_content = get_shopping_assistant_prompt(
         user_preferences=user_preferences,

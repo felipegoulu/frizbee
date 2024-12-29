@@ -7653,3 +7653,591 @@ TypeError: update_key() takes 2 positional arguments but 3 were given
 2024-12-27 22:36:41,037 INFO: 127.0.0.1 - - [27/Dec/2024 22:36:41] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
 2024-12-27 22:36:42,068 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
 2024-12-27 22:36:42,069 INFO: 127.0.0.1 - - [27/Dec/2024 22:36:42] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:40:21,083 INFO: Flask app started [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/run.py:26]
+2024-12-28 20:40:21,111 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.0.186:8000 [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:40:21,112 INFO: [33mPress CTRL+C to quit[0m [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:40:37,309 INFO: Discovering subpackages in _NamespacePath(['/usr/local/lib/python3.11/site-packages/pinecone_plugins']) [in /usr/local/lib/python3.11/site-packages/pinecone_plugin_interface/actions/discover_namespace_packages.py:12]
+2024-12-28 20:40:37,309 INFO: Looking for plugins in pinecone_plugins.inference [in /usr/local/lib/python3.11/site-packages/pinecone_plugin_interface/actions/discover_plugins.py:9]
+2024-12-28 20:40:37,345 INFO: Installing plugin inference into Pinecone [in /usr/local/lib/python3.11/site-packages/pinecone_plugin_interface/actions/installation.py:10]
+2024-12-28 20:40:43,447 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 20:40:47,199 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 20:40:48,523 INFO: Status: 200 [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:12]
+2024-12-28 20:40:48,523 INFO: Content-type: application/json; charset=UTF-8 [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:13]
+2024-12-28 20:40:48,523 INFO: Body: {"messaging_product":"whatsapp","contacts":[{"input":"+54111549276686","wa_id":"5491149276686"}],"messages":[{"id":"wamid.HBgNNTQ5MTE0OTI3NjY4NhUCABEYEkU3MjU2QjkzNjMzNThCMDg0QQA="}]} [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:14]
+2024-12-28 20:40:48,525 INFO: 127.0.0.1 - - [28/Dec/2024 20:40:48] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:40:49,263 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 20:40:49,263 INFO: 127.0.0.1 - - [28/Dec/2024 20:40:49] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:40:49,422 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 20:40:49,423 INFO: 127.0.0.1 - - [28/Dec/2024 20:40:49] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:40:50,176 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 20:40:50,178 INFO: 127.0.0.1 - - [28/Dec/2024 20:40:50] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:41:25,231 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 20:41:26,209 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 20:41:27,908 INFO: Status: 200 [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:12]
+2024-12-28 20:41:27,909 INFO: Content-type: application/json; charset=UTF-8 [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:13]
+2024-12-28 20:41:27,909 INFO: Body: {"messaging_product":"whatsapp","contacts":[{"input":"+54111549276686","wa_id":"5491149276686"}],"messages":[{"id":"wamid.HBgNNTQ5MTE0OTI3NjY4NhUCABEYEjMwQTI0REMxOEQ0Q0YyNjYxMQA="}]} [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:14]
+2024-12-28 20:41:27,910 INFO: 127.0.0.1 - - [28/Dec/2024 20:41:27] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:41:28,578 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 20:41:28,579 INFO: 127.0.0.1 - - [28/Dec/2024 20:41:28] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:41:29,220 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 20:41:29,221 INFO: 127.0.0.1 - - [28/Dec/2024 20:41:29] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:41:29,352 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 20:41:29,353 INFO: 127.0.0.1 - - [28/Dec/2024 20:41:29] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:41:48,755 INFO: Flask app started [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/run.py:26]
+2024-12-28 20:41:48,773 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.0.186:8000 [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:41:48,773 INFO: [33mPress CTRL+C to quit[0m [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:42:01,080 INFO: Discovering subpackages in _NamespacePath(['/usr/local/lib/python3.11/site-packages/pinecone_plugins']) [in /usr/local/lib/python3.11/site-packages/pinecone_plugin_interface/actions/discover_namespace_packages.py:12]
+2024-12-28 20:42:01,080 INFO: Looking for plugins in pinecone_plugins.inference [in /usr/local/lib/python3.11/site-packages/pinecone_plugin_interface/actions/discover_plugins.py:9]
+2024-12-28 20:42:01,115 INFO: Installing plugin inference into Pinecone [in /usr/local/lib/python3.11/site-packages/pinecone_plugin_interface/actions/installation.py:10]
+2024-12-28 20:42:06,696 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 20:42:07,774 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 20:42:08,985 INFO: Status: 200 [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:12]
+2024-12-28 20:42:08,986 INFO: Content-type: application/json; charset=UTF-8 [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:13]
+2024-12-28 20:42:08,986 INFO: Body: {"messaging_product":"whatsapp","contacts":[{"input":"+54111549276686","wa_id":"5491149276686"}],"messages":[{"id":"wamid.HBgNNTQ5MTE0OTI3NjY4NhUCABEYEjc5N0NBQzM4NjREQTU5NUI3MgA="}]} [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:14]
+2024-12-28 20:42:08,988 INFO: 127.0.0.1 - - [28/Dec/2024 20:42:08] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:42:09,922 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 20:42:09,923 INFO: 127.0.0.1 - - [28/Dec/2024 20:42:09] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:42:10,014 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 20:42:10,015 INFO: 127.0.0.1 - - [28/Dec/2024 20:42:10] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:42:10,296 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 20:42:10,297 INFO: 127.0.0.1 - - [28/Dec/2024 20:42:10] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:46:23,037 INFO: Flask app started [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/run.py:26]
+2024-12-28 20:46:23,050 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.0.186:8000 [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:46:23,051 INFO: [33mPress CTRL+C to quit[0m [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:46:28,521 ERROR: Exception on /webhook [POST] [in /usr/local/lib/python3.11/site-packages/flask/app.py:838]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.11/site-packages/flask/app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/flask/app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/flask/app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/flask/app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/decorators/security.py", line 36, in decorated_function
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py", line 87, in webhook_post
+    return handle_message()
+           ^^^^^^^^^^^^^^^^
+  File "/Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py", line 44, in handle_message
+    process_whatsapp_message(body)
+  File "/Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py", line 75, in process_whatsapp_message
+    input = body["entry"][0]["changes"][0]["value"]["contacts"][0]["input"]
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'input'
+2024-12-28 20:46:28,529 INFO: 127.0.0.1 - - [28/Dec/2024 20:46:28] "[35m[1mPOST /webhook HTTP/1.1[0m" 500 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:46:29,291 ERROR: Exception on /webhook [POST] [in /usr/local/lib/python3.11/site-packages/flask/app.py:838]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.11/site-packages/flask/app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/flask/app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/flask/app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/flask/app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/decorators/security.py", line 36, in decorated_function
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py", line 87, in webhook_post
+    return handle_message()
+           ^^^^^^^^^^^^^^^^
+  File "/Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py", line 44, in handle_message
+    process_whatsapp_message(body)
+  File "/Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py", line 75, in process_whatsapp_message
+    input = body["entry"][0]["changes"][0]["value"]["contacts"][0]["input"]
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'input'
+2024-12-28 20:46:29,293 INFO: 127.0.0.1 - - [28/Dec/2024 20:46:29] "[35m[1mPOST /webhook HTTP/1.1[0m" 500 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:46:30,192 ERROR: Exception on /webhook [POST] [in /usr/local/lib/python3.11/site-packages/flask/app.py:838]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.11/site-packages/flask/app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/flask/app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/flask/app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/flask/app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/decorators/security.py", line 36, in decorated_function
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py", line 87, in webhook_post
+    return handle_message()
+           ^^^^^^^^^^^^^^^^
+  File "/Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py", line 44, in handle_message
+    process_whatsapp_message(body)
+  File "/Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py", line 75, in process_whatsapp_message
+    input = body["entry"][0]["changes"][0]["value"]["contacts"][0]["input"]
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'input'
+2024-12-28 20:46:30,194 INFO: 127.0.0.1 - - [28/Dec/2024 20:46:30] "[35m[1mPOST /webhook HTTP/1.1[0m" 500 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:46:32,576 ERROR: Exception on /webhook [POST] [in /usr/local/lib/python3.11/site-packages/flask/app.py:838]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.11/site-packages/flask/app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/flask/app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/flask/app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/flask/app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/decorators/security.py", line 36, in decorated_function
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py", line 87, in webhook_post
+    return handle_message()
+           ^^^^^^^^^^^^^^^^
+  File "/Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py", line 44, in handle_message
+    process_whatsapp_message(body)
+  File "/Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py", line 75, in process_whatsapp_message
+    input = body["entry"][0]["changes"][0]["value"]["contacts"][0]["input"]
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'input'
+2024-12-28 20:46:32,577 INFO: 127.0.0.1 - - [28/Dec/2024 20:46:32] "[35m[1mPOST /webhook HTTP/1.1[0m" 500 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:46:44,623 INFO: Flask app started [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/run.py:26]
+2024-12-28 20:46:44,635 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.0.186:8000 [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:46:44,635 INFO: [33mPress CTRL+C to quit[0m [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:46:57,739 INFO: Discovering subpackages in _NamespacePath(['/usr/local/lib/python3.11/site-packages/pinecone_plugins']) [in /usr/local/lib/python3.11/site-packages/pinecone_plugin_interface/actions/discover_namespace_packages.py:12]
+2024-12-28 20:46:57,747 INFO: Looking for plugins in pinecone_plugins.inference [in /usr/local/lib/python3.11/site-packages/pinecone_plugin_interface/actions/discover_plugins.py:9]
+2024-12-28 20:46:57,777 INFO: Installing plugin inference into Pinecone [in /usr/local/lib/python3.11/site-packages/pinecone_plugin_interface/actions/installation.py:10]
+2024-12-28 20:47:04,759 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 20:47:04,812 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 20:47:06,109 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 20:47:06,423 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 20:47:09,374 INFO: Status: 200 [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:12]
+2024-12-28 20:47:09,376 INFO: Content-type: application/json; charset=UTF-8 [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:13]
+2024-12-28 20:47:09,376 INFO: Body: {"messaging_product":"whatsapp","contacts":[{"input":"+54111549276686","wa_id":"5491149276686"}],"messages":[{"id":"wamid.HBgNNTQ5MTE0OTI3NjY4NhUCABEYEjYyRjlBNkJCQkNERjRENTZCNwA="}]} [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:14]
+2024-12-28 20:47:09,377 INFO: 127.0.0.1 - - [28/Dec/2024 20:47:09] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:47:09,666 INFO: Status: 200 [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:12]
+2024-12-28 20:47:09,673 INFO: Content-type: application/json; charset=UTF-8 [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:13]
+2024-12-28 20:47:09,673 INFO: Body: {"messaging_product":"whatsapp","contacts":[{"input":"+54111549276686","wa_id":"5491149276686"}],"messages":[{"id":"wamid.HBgNNTQ5MTE0OTI3NjY4NhUCABEYEjY1QTU3OUFENzE2RDVBQ0Y0QgA="}]} [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:14]
+2024-12-28 20:47:09,674 INFO: 127.0.0.1 - - [28/Dec/2024 20:47:09] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:47:10,282 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 20:47:10,283 INFO: 127.0.0.1 - - [28/Dec/2024 20:47:10] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:47:10,625 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 20:47:10,626 INFO: 127.0.0.1 - - [28/Dec/2024 20:47:10] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:47:10,759 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 20:47:10,759 INFO: 127.0.0.1 - - [28/Dec/2024 20:47:10] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:47:10,798 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 20:47:10,799 INFO: 127.0.0.1 - - [28/Dec/2024 20:47:10] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:47:10,861 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 20:47:10,861 INFO: 127.0.0.1 - - [28/Dec/2024 20:47:10] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:47:10,909 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 20:47:10,910 INFO: 127.0.0.1 - - [28/Dec/2024 20:47:10] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:47:11,039 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 20:47:11,040 INFO: 127.0.0.1 - - [28/Dec/2024 20:47:11] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:47:20,491 INFO: Flask app started [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/run.py:26]
+2024-12-28 20:47:20,532 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.0.186:8000 [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:47:20,532 INFO: [33mPress CTRL+C to quit[0m [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:47:30,498 INFO: Discovering subpackages in _NamespacePath(['/usr/local/lib/python3.11/site-packages/pinecone_plugins']) [in /usr/local/lib/python3.11/site-packages/pinecone_plugin_interface/actions/discover_namespace_packages.py:12]
+2024-12-28 20:47:30,499 INFO: Looking for plugins in pinecone_plugins.inference [in /usr/local/lib/python3.11/site-packages/pinecone_plugin_interface/actions/discover_plugins.py:9]
+2024-12-28 20:47:30,528 INFO: Installing plugin inference into Pinecone [in /usr/local/lib/python3.11/site-packages/pinecone_plugin_interface/actions/installation.py:10]
+2024-12-28 20:47:35,782 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 20:47:38,057 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 20:47:39,207 INFO: Status: 200 [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:12]
+2024-12-28 20:47:39,207 INFO: Content-type: application/json; charset=UTF-8 [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:13]
+2024-12-28 20:47:39,208 INFO: Body: {"messaging_product":"whatsapp","contacts":[{"input":"+54111549276686","wa_id":"5491149276686"}],"messages":[{"id":"wamid.HBgNNTQ5MTE0OTI3NjY4NhUCABEYEjA2RDc3NjlCRDI3M0JFQkZERAA="}]} [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:14]
+2024-12-28 20:47:39,209 INFO: 127.0.0.1 - - [28/Dec/2024 20:47:39] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:47:39,851 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 20:47:39,851 INFO: 127.0.0.1 - - [28/Dec/2024 20:47:39] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:47:40,466 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 20:47:40,467 INFO: 127.0.0.1 - - [28/Dec/2024 20:47:40] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:47:40,739 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 20:47:40,739 INFO: 127.0.0.1 - - [28/Dec/2024 20:47:40] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:49:34,875 INFO: Flask app started [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/run.py:26]
+2024-12-28 20:49:34,888 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.0.186:8000 [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:49:34,889 INFO: [33mPress CTRL+C to quit[0m [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:49:42,877 INFO: Discovering subpackages in _NamespacePath(['/usr/local/lib/python3.11/site-packages/pinecone_plugins']) [in /usr/local/lib/python3.11/site-packages/pinecone_plugin_interface/actions/discover_namespace_packages.py:12]
+2024-12-28 20:49:42,878 INFO: Looking for plugins in pinecone_plugins.inference [in /usr/local/lib/python3.11/site-packages/pinecone_plugin_interface/actions/discover_plugins.py:9]
+2024-12-28 20:49:42,904 INFO: Installing plugin inference into Pinecone [in /usr/local/lib/python3.11/site-packages/pinecone_plugin_interface/actions/installation.py:10]
+2024-12-28 20:49:52,297 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 20:49:53,300 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 20:49:54,545 INFO: Status: 200 [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:12]
+2024-12-28 20:49:54,546 INFO: Content-type: application/json; charset=UTF-8 [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:13]
+2024-12-28 20:49:54,546 INFO: Body: {"messaging_product":"whatsapp","contacts":[{"input":"+54111549276686","wa_id":"5491149276686"}],"messages":[{"id":"wamid.HBgNNTQ5MTE0OTI3NjY4NhUCABEYEjUzQjkxQkM4Qjk3REMwRkRFRgA="}]} [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:14]
+2024-12-28 20:49:54,548 INFO: 127.0.0.1 - - [28/Dec/2024 20:49:54] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:49:55,551 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 20:49:55,552 INFO: 127.0.0.1 - - [28/Dec/2024 20:49:55] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:49:55,610 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 20:49:55,612 INFO: 127.0.0.1 - - [28/Dec/2024 20:49:55] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:49:55,971 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 20:49:55,971 INFO: 127.0.0.1 - - [28/Dec/2024 20:49:55] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:50:17,819 INFO: Flask app started [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/run.py:26]
+2024-12-28 20:50:17,837 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.0.186:8000 [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:50:17,837 INFO: [33mPress CTRL+C to quit[0m [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:50:30,378 INFO: Discovering subpackages in _NamespacePath(['/usr/local/lib/python3.11/site-packages/pinecone_plugins']) [in /usr/local/lib/python3.11/site-packages/pinecone_plugin_interface/actions/discover_namespace_packages.py:12]
+2024-12-28 20:50:30,381 INFO: Looking for plugins in pinecone_plugins.inference [in /usr/local/lib/python3.11/site-packages/pinecone_plugin_interface/actions/discover_plugins.py:9]
+2024-12-28 20:50:30,407 INFO: Installing plugin inference into Pinecone [in /usr/local/lib/python3.11/site-packages/pinecone_plugin_interface/actions/installation.py:10]
+2024-12-28 20:50:35,951 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 20:50:37,480 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 20:50:38,348 ERROR: Request failed due to: 400 Client Error: Bad Request for url: https://graph.facebook.com/v21.0/500884943114067/messages [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:47]
+2024-12-28 20:50:38,350 INFO: 127.0.0.1 - - [28/Dec/2024 20:50:38] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:51:23,740 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 20:51:24,822 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 20:51:25,748 ERROR: Request failed due to: 400 Client Error: Bad Request for url: https://graph.facebook.com/v21.0/500884943114067/messages [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:47]
+2024-12-28 20:51:25,749 INFO: 127.0.0.1 - - [28/Dec/2024 20:51:25] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:53:56,614 INFO: Flask app started [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/run.py:26]
+2024-12-28 20:53:56,625 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.0.186:8000 [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:53:56,625 INFO: [33mPress CTRL+C to quit[0m [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:54:10,221 INFO: Discovering subpackages in _NamespacePath(['/usr/local/lib/python3.11/site-packages/pinecone_plugins']) [in /usr/local/lib/python3.11/site-packages/pinecone_plugin_interface/actions/discover_namespace_packages.py:12]
+2024-12-28 20:54:10,222 INFO: Looking for plugins in pinecone_plugins.inference [in /usr/local/lib/python3.11/site-packages/pinecone_plugin_interface/actions/discover_plugins.py:9]
+2024-12-28 20:54:10,255 INFO: Installing plugin inference into Pinecone [in /usr/local/lib/python3.11/site-packages/pinecone_plugin_interface/actions/installation.py:10]
+2024-12-28 20:54:16,137 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 20:54:17,354 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 20:54:18,559 INFO: Status: 200 [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:12]
+2024-12-28 20:54:18,559 INFO: Content-type: application/json; charset=UTF-8 [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:13]
+2024-12-28 20:54:18,559 INFO: Body: {"messaging_product":"whatsapp","contacts":[{"input":"+54111549276686","wa_id":"5491149276686"}],"messages":[{"id":"wamid.HBgNNTQ5MTE0OTI3NjY4NhUCABEYEjVEREY1RkNGQzJERkVEM0ZFNQA="}]} [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:14]
+2024-12-28 20:54:18,560 INFO: 127.0.0.1 - - [28/Dec/2024 20:54:18] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:54:19,628 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 20:54:19,629 INFO: 127.0.0.1 - - [28/Dec/2024 20:54:19] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:54:19,938 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 20:54:19,939 INFO: 127.0.0.1 - - [28/Dec/2024 20:54:19] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:54:19,943 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 20:54:19,944 INFO: 127.0.0.1 - - [28/Dec/2024 20:54:19] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:55:01,649 INFO: Flask app started [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/run.py:26]
+2024-12-28 20:55:01,676 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.0.186:8000 [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:55:01,676 INFO: [33mPress CTRL+C to quit[0m [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:55:12,316 INFO: Discovering subpackages in _NamespacePath(['/usr/local/lib/python3.11/site-packages/pinecone_plugins']) [in /usr/local/lib/python3.11/site-packages/pinecone_plugin_interface/actions/discover_namespace_packages.py:12]
+2024-12-28 20:55:12,317 INFO: Looking for plugins in pinecone_plugins.inference [in /usr/local/lib/python3.11/site-packages/pinecone_plugin_interface/actions/discover_plugins.py:9]
+2024-12-28 20:55:12,341 INFO: Installing plugin inference into Pinecone [in /usr/local/lib/python3.11/site-packages/pinecone_plugin_interface/actions/installation.py:10]
+2024-12-28 20:55:17,643 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 20:55:18,938 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 20:55:20,093 INFO: Status: 200 [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:12]
+2024-12-28 20:55:20,093 INFO: Content-type: application/json; charset=UTF-8 [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:13]
+2024-12-28 20:55:20,093 INFO: Body: {"messaging_product":"whatsapp","contacts":[{"input":"+54111549276686","wa_id":"5491149276686"}],"messages":[{"id":"wamid.HBgNNTQ5MTE0OTI3NjY4NhUCABEYEkY1MUJDN0IyRjNGQzA1Rjg4NgA="}]} [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:14]
+2024-12-28 20:55:20,095 INFO: 127.0.0.1 - - [28/Dec/2024 20:55:20] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:55:20,961 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 20:55:20,961 INFO: 127.0.0.1 - - [28/Dec/2024 20:55:20] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:55:21,292 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 20:55:21,293 INFO: 127.0.0.1 - - [28/Dec/2024 20:55:21] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:55:21,387 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 20:55:21,388 INFO: 127.0.0.1 - - [28/Dec/2024 20:55:21] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:55:46,620 INFO: Flask app started [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/run.py:26]
+2024-12-28 20:55:46,632 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.0.186:8000 [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:55:46,632 INFO: [33mPress CTRL+C to quit[0m [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:56:02,616 INFO: Discovering subpackages in _NamespacePath(['/usr/local/lib/python3.11/site-packages/pinecone_plugins']) [in /usr/local/lib/python3.11/site-packages/pinecone_plugin_interface/actions/discover_namespace_packages.py:12]
+2024-12-28 20:56:02,617 INFO: Looking for plugins in pinecone_plugins.inference [in /usr/local/lib/python3.11/site-packages/pinecone_plugin_interface/actions/discover_plugins.py:9]
+2024-12-28 20:56:02,637 INFO: Installing plugin inference into Pinecone [in /usr/local/lib/python3.11/site-packages/pinecone_plugin_interface/actions/installation.py:10]
+2024-12-28 20:56:08,200 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 20:56:09,726 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 20:56:10,951 INFO: Status: 200 [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:12]
+2024-12-28 20:56:10,951 INFO: Content-type: application/json; charset=UTF-8 [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:13]
+2024-12-28 20:56:10,952 INFO: Body: {"messaging_product":"whatsapp","contacts":[{"input":"+54111549276686","wa_id":"5491149276686"}],"messages":[{"id":"wamid.HBgNNTQ5MTE0OTI3NjY4NhUCABEYEjVERjdCRDU4QzJFRTFBMUYzRQA="}]} [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:14]
+2024-12-28 20:56:10,954 INFO: 127.0.0.1 - - [28/Dec/2024 20:56:10] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:56:11,644 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 20:56:11,644 INFO: 127.0.0.1 - - [28/Dec/2024 20:56:11] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:56:11,958 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 20:56:11,959 INFO: 127.0.0.1 - - [28/Dec/2024 20:56:11] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:56:12,234 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 20:56:12,235 INFO: 127.0.0.1 - - [28/Dec/2024 20:56:12] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:58:19,231 ERROR: Exception on /webhook [POST] [in /usr/local/lib/python3.11/site-packages/flask/app.py:838]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.11/site-packages/flask/app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/flask/app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/flask/app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/flask/app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/decorators/security.py", line 36, in decorated_function
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py", line 87, in webhook_post
+    return handle_message()
+           ^^^^^^^^^^^^^^^^
+  File "/Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py", line 44, in handle_message
+    process_whatsapp_message(body)
+  File "/Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py", line 92, in process_whatsapp_message
+    response = generate_response(message_body, wa_id,msg_id)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/services/openai_service.py", line 46, in generate_response
+    response = asyncio.run(invoke_our_graph(state))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/Cellar/python@3.11/3.11.4/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/usr/local/Cellar/python@3.11/3.11.4/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/Cellar/python@3.11/3.11.4/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 653, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/services/openai_service.py", line 15, in invoke_our_graph
+    response = await graph_runnable.ainvoke(state)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/langgraph/pregel/__init__.py", line 1588, in ainvoke
+    async for chunk in self.astream(
+  File "/usr/local/lib/python3.11/site-packages/langgraph/pregel/__init__.py", line 1477, in astream
+    async for _ in runner.atick(
+  File "/usr/local/lib/python3.11/site-packages/langgraph/pregel/runner.py", line 130, in atick
+    await arun_with_retry(t, retry_policy, stream=self.use_astream)
+  File "/usr/local/lib/python3.11/site-packages/langgraph/pregel/retry.py", line 102, in arun_with_retry
+    await task.proc.ainvoke(task.input, config)
+  File "/usr/local/lib/python3.11/site-packages/langgraph/utils/runnable.py", line 453, in ainvoke
+    input = await asyncio.create_task(coro, context=context)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/langgraph/utils/runnable.py", line 236, in ainvoke
+    ret = await asyncio.create_task(coro, context=context)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/langgraph/graph/graph.py", line 114, in _aroute
+    result = await self.path.ainvoke(value, config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/langgraph/utils/runnable.py", line 224, in ainvoke
+    ret = await asyncio.create_task(coro, context=context)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/langchain_core/runnables/config.py", line 588, in run_in_executor
+    return await asyncio.get_running_loop().run_in_executor(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/Cellar/python@3.11/3.11.4/Frameworks/Python.framework/Versions/3.11/lib/python3.11/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/langchain_core/runnables/config.py", line 579, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/felipegoulu/projects/activos/jumbo_ai/backend/graph.py", line 150, in determine_initial_node
+    key = key['key']
+          ~~~^^^^^^^
+TypeError: 'NoneType' object is not subscriptable
+2024-12-28 20:58:19,247 INFO: 127.0.0.1 - - [28/Dec/2024 20:58:19] "[35m[1mPOST /webhook HTTP/1.1[0m" 500 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 20:58:20,115 INFO: 127.0.0.1 - - [28/Dec/2024 20:58:20] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 21:05:27,863 INFO: Flask app started [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/run.py:26]
+2024-12-28 21:05:27,877 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.0.186:8000 [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 21:05:27,878 INFO: [33mPress CTRL+C to quit[0m [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 21:05:42,300 INFO: Discovering subpackages in _NamespacePath(['/usr/local/lib/python3.11/site-packages/pinecone_plugins']) [in /usr/local/lib/python3.11/site-packages/pinecone_plugin_interface/actions/discover_namespace_packages.py:12]
+2024-12-28 21:05:42,300 INFO: Looking for plugins in pinecone_plugins.inference [in /usr/local/lib/python3.11/site-packages/pinecone_plugin_interface/actions/discover_plugins.py:9]
+2024-12-28 21:05:42,334 INFO: Installing plugin inference into Pinecone [in /usr/local/lib/python3.11/site-packages/pinecone_plugin_interface/actions/installation.py:10]
+2024-12-28 21:05:47,499 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 21:05:48,926 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 21:05:50,260 INFO: Status: 200 [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:12]
+2024-12-28 21:05:50,260 INFO: Content-type: application/json; charset=UTF-8 [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:13]
+2024-12-28 21:05:50,261 INFO: Body: {"messaging_product":"whatsapp","contacts":[{"input":"+54111567270201","wa_id":"5491167270201"}],"messages":[{"id":"wamid.HBgNNTQ5MTE2NzI3MDIwMRUCABEYEjM0MTQ2NUM5NzU2QTdGRjlBMAA="}]} [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:14]
+2024-12-28 21:05:50,263 INFO: 127.0.0.1 - - [28/Dec/2024 21:05:50] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 21:05:52,798 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 21:05:52,799 INFO: 127.0.0.1 - - [28/Dec/2024 21:05:52] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 21:05:53,665 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 21:05:53,666 INFO: 127.0.0.1 - - [28/Dec/2024 21:05:53] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 21:05:53,703 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 21:05:53,704 INFO: 127.0.0.1 - - [28/Dec/2024 21:05:53] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 21:06:11,428 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 21:06:11,466 ERROR: Exception on /webhook [POST] [in /usr/local/lib/python3.11/site-packages/flask/app.py:838]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.11/site-packages/flask/app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/flask/app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/flask/app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/flask/app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/decorators/security.py", line 36, in decorated_function
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py", line 87, in webhook_post
+    return handle_message()
+           ^^^^^^^^^^^^^^^^
+  File "/Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py", line 44, in handle_message
+    process_whatsapp_message(body)
+  File "/Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py", line 92, in process_whatsapp_message
+    response = generate_response(message_body, wa_id,msg_id)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/services/openai_service.py", line 46, in generate_response
+    response = asyncio.run(invoke_our_graph(state))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/Cellar/python@3.11/3.11.4/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/usr/local/Cellar/python@3.11/3.11.4/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/Cellar/python@3.11/3.11.4/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 653, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/services/openai_service.py", line 15, in invoke_our_graph
+    response = await graph_runnable.ainvoke(state)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/langgraph/pregel/__init__.py", line 1588, in ainvoke
+    async for chunk in self.astream(
+  File "/usr/local/lib/python3.11/site-packages/langgraph/pregel/__init__.py", line 1477, in astream
+    async for _ in runner.atick(
+  File "/usr/local/lib/python3.11/site-packages/langgraph/pregel/runner.py", line 130, in atick
+    await arun_with_retry(t, retry_policy, stream=self.use_astream)
+  File "/usr/local/lib/python3.11/site-packages/langgraph/pregel/retry.py", line 102, in arun_with_retry
+    await task.proc.ainvoke(task.input, config)
+  File "/usr/local/lib/python3.11/site-packages/langgraph/utils/runnable.py", line 453, in ainvoke
+    input = await asyncio.create_task(coro, context=context)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/langgraph/utils/runnable.py", line 236, in ainvoke
+    ret = await asyncio.create_task(coro, context=context)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/langchain_core/runnables/config.py", line 588, in run_in_executor
+    return await asyncio.get_running_loop().run_in_executor(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/Cellar/python@3.11/3.11.4/Frameworks/Python.framework/Versions/3.11/lib/python3.11/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/langchain_core/runnables/config.py", line 579, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/felipegoulu/projects/activos/jumbo_ai/backend/graph.py", line 263, in _call_model
+    old_carts= state["old_carts"][-1]
+               ~~~~~~~~~~~~~~~~~~^^^^
+IndexError: list index out of range
+2024-12-28 21:06:11,480 INFO: 127.0.0.1 - - [28/Dec/2024 21:06:11] "[35m[1mPOST /webhook HTTP/1.1[0m" 500 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 21:06:12,563 INFO: 127.0.0.1 - - [28/Dec/2024 21:06:12] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 21:08:29,793 INFO: Flask app started [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/run.py:26]
+2024-12-28 21:08:29,807 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.0.186:8000 [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 21:08:29,807 INFO: [33mPress CTRL+C to quit[0m [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 21:08:44,553 INFO: Discovering subpackages in _NamespacePath(['/usr/local/lib/python3.11/site-packages/pinecone_plugins']) [in /usr/local/lib/python3.11/site-packages/pinecone_plugin_interface/actions/discover_namespace_packages.py:12]
+2024-12-28 21:08:44,554 INFO: Looking for plugins in pinecone_plugins.inference [in /usr/local/lib/python3.11/site-packages/pinecone_plugin_interface/actions/discover_plugins.py:9]
+2024-12-28 21:08:44,588 INFO: Installing plugin inference into Pinecone [in /usr/local/lib/python3.11/site-packages/pinecone_plugin_interface/actions/installation.py:10]
+2024-12-28 21:08:49,386 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 21:08:51,747 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 21:08:52,749 INFO: Status: 200 [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:12]
+2024-12-28 21:08:52,750 INFO: Content-type: application/json; charset=UTF-8 [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:13]
+2024-12-28 21:08:52,750 INFO: Body: {"messaging_product":"whatsapp","contacts":[{"input":"+54111567270201","wa_id":"5491167270201"}],"messages":[{"id":"wamid.HBgNNTQ5MTE2NzI3MDIwMRUCABEYEjVBQ0EyMzZFOUU2MzA5RDM5RgA="}]} [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:14]
+2024-12-28 21:08:52,752 INFO: 127.0.0.1 - - [28/Dec/2024 21:08:52] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 21:08:53,972 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 21:08:53,974 INFO: 127.0.0.1 - - [28/Dec/2024 21:08:53] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 21:08:54,152 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 21:08:54,152 INFO: 127.0.0.1 - - [28/Dec/2024 21:08:54] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 21:08:54,406 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 21:08:54,407 INFO: 127.0.0.1 - - [28/Dec/2024 21:08:54] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 21:09:14,275 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 21:09:15,359 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 21:09:16,299 INFO: HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 21:09:24,685 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 21:09:25,711 INFO: Status: 200 [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:12]
+2024-12-28 21:09:25,712 INFO: Content-type: application/json; charset=UTF-8 [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:13]
+2024-12-28 21:09:25,713 INFO: Body: {"messaging_product":"whatsapp","contacts":[{"input":"+54111567270201","wa_id":"5491167270201"}],"messages":[{"id":"wamid.HBgNNTQ5MTE2NzI3MDIwMRUCABEYEjA2MjZGQ0M2MDAyRDAxNDMxOQA="}]} [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:14]
+2024-12-28 21:09:25,716 INFO: 127.0.0.1 - - [28/Dec/2024 21:09:25] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 21:09:26,635 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 21:09:26,636 INFO: 127.0.0.1 - - [28/Dec/2024 21:09:26] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 21:09:27,104 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 21:09:27,105 INFO: 127.0.0.1 - - [28/Dec/2024 21:09:27] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 21:09:27,150 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 21:09:27,151 INFO: 127.0.0.1 - - [28/Dec/2024 21:09:27] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 21:09:41,452 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 21:09:42,387 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 21:09:46,449 INFO: Status: 200 [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:12]
+2024-12-28 21:09:46,449 INFO: Content-type: application/json; charset=UTF-8 [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:13]
+2024-12-28 21:09:46,449 INFO: Body: {"messaging_product":"whatsapp","contacts":[{"input":"+54111567270201","wa_id":"5491167270201"}],"messages":[{"id":"wamid.HBgNNTQ5MTE2NzI3MDIwMRUCABEYEkU4Q0RGRTU0MDg4QzQ2QTM0NQA="}]} [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:14]
+2024-12-28 21:09:46,450 INFO: 127.0.0.1 - - [28/Dec/2024 21:09:46] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 21:09:47,527 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 21:09:47,528 INFO: 127.0.0.1 - - [28/Dec/2024 21:09:47] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 21:09:47,730 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 21:09:47,731 INFO: 127.0.0.1 - - [28/Dec/2024 21:09:47] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 21:09:48,079 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 21:09:48,080 INFO: 127.0.0.1 - - [28/Dec/2024 21:09:48] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 21:09:56,433 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 21:09:58,736 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 21:09:59,969 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 21:10:01,463 INFO: Status: 200 [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:12]
+2024-12-28 21:10:01,464 INFO: Content-type: application/json; charset=UTF-8 [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:13]
+2024-12-28 21:10:01,464 INFO: Body: {"messaging_product":"whatsapp","contacts":[{"input":"+54111567270201","wa_id":"5491167270201"}],"messages":[{"id":"wamid.HBgNNTQ5MTE2NzI3MDIwMRUCABEYEjM0OUFGQTc3NkNCQ0Q5RTE4QwA="}]} [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:14]
+2024-12-28 21:10:01,465 INFO: 127.0.0.1 - - [28/Dec/2024 21:10:01] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 21:10:02,374 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 21:10:02,375 INFO: 127.0.0.1 - - [28/Dec/2024 21:10:02] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 21:10:02,901 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 21:10:02,902 INFO: 127.0.0.1 - - [28/Dec/2024 21:10:02] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 21:10:02,976 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 21:10:02,977 INFO: 127.0.0.1 - - [28/Dec/2024 21:10:02] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 21:10:03,205 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 21:10:03,206 INFO: 127.0.0.1 - - [28/Dec/2024 21:10:03] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 21:17:15,368 INFO: Flask app started [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/run.py:26]
+2024-12-28 21:17:15,382 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.0.186:8000 [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 21:17:15,382 INFO: [33mPress CTRL+C to quit[0m [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 21:17:28,275 INFO: Discovering subpackages in _NamespacePath(['/usr/local/lib/python3.11/site-packages/pinecone_plugins']) [in /usr/local/lib/python3.11/site-packages/pinecone_plugin_interface/actions/discover_namespace_packages.py:12]
+2024-12-28 21:17:28,276 INFO: Looking for plugins in pinecone_plugins.inference [in /usr/local/lib/python3.11/site-packages/pinecone_plugin_interface/actions/discover_plugins.py:9]
+2024-12-28 21:17:28,309 INFO: Installing plugin inference into Pinecone [in /usr/local/lib/python3.11/site-packages/pinecone_plugin_interface/actions/installation.py:10]
+2024-12-28 21:17:33,412 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 21:17:34,706 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 21:17:36,137 INFO: Status: 200 [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:12]
+2024-12-28 21:17:36,137 INFO: Content-type: application/json; charset=UTF-8 [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:13]
+2024-12-28 21:17:36,137 INFO: Body: {"messaging_product":"whatsapp","contacts":[{"input":"+54111567270201","wa_id":"5491167270201"}],"messages":[{"id":"wamid.HBgNNTQ5MTE2NzI3MDIwMRUCABEYEkZCREVCM0RDMTE1OTc1MEIyMgA="}]} [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:14]
+2024-12-28 21:17:36,139 INFO: 127.0.0.1 - - [28/Dec/2024 21:17:36] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 21:17:36,776 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 21:17:36,777 INFO: 127.0.0.1 - - [28/Dec/2024 21:17:36] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 21:17:37,241 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 21:17:37,242 INFO: 127.0.0.1 - - [28/Dec/2024 21:17:37] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 21:17:37,443 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 21:17:37,444 INFO: 127.0.0.1 - - [28/Dec/2024 21:17:37] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 21:19:26,354 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 21:19:27,855 INFO: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK" [in /usr/local/lib/python3.11/site-packages/httpx/_client.py:1026]
+2024-12-28 21:19:28,926 INFO: Status: 200 [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:12]
+2024-12-28 21:19:28,926 INFO: Content-type: application/json; charset=UTF-8 [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:13]
+2024-12-28 21:19:28,926 INFO: Body: {"messaging_product":"whatsapp","contacts":[{"input":"+54111567270201","wa_id":"5491167270201"}],"messages":[{"id":"wamid.HBgNNTQ5MTE2NzI3MDIwMRUCABEYEjIzQTFENDQzQTQ0MjVCODI2NgA="}]} [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/utils/whatsapp_utils.py:14]
+2024-12-28 21:19:28,928 INFO: 127.0.0.1 - - [28/Dec/2024 21:19:28] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 21:19:29,802 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 21:19:29,802 INFO: 127.0.0.1 - - [28/Dec/2024 21:19:29] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 21:19:30,151 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 21:19:30,152 INFO: 127.0.0.1 - - [28/Dec/2024 21:19:30] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 21:19:30,352 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 21:19:30,353 INFO: 127.0.0.1 - - [28/Dec/2024 21:19:30] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2024-12-28 21:19:30,863 INFO: Received a WhatsApp status update. [in /Users/felipegoulu/projects/activos/jumbo_ai/whatsapp_front/app/views.py:39]
+2024-12-28 21:19:30,864 INFO: 127.0.0.1 - - [28/Dec/2024 21:19:30] "POST /webhook HTTP/1.1" 200 - [in /usr/local/lib/python3.11/site-packages/werkzeug/_internal.py:97]

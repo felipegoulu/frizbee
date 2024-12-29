@@ -77,7 +77,7 @@ def process_whatsapp_message(body):
     message_body = message["text"]["body"]
     print(f"nombre: {name}")
     from app.services.openai_service import generate_response  # Add this import
-    print(message["id"])
+    print(message_body)
 
     msg_id = message["id"]
 
@@ -91,7 +91,17 @@ def process_whatsapp_message(body):
         print("no duplicado")
         response = generate_response(message_body, wa_id,msg_id)
         response = process_text_for_whatsapp(response)
-        data = get_text_message_input(current_app.config["RECIPIENT_WAID"], response)
+        # creo que aca en vez usar recipient waid tengo que ponerle yo un unique identifier. este unique tiene que ser el nro de telefeno.
+        # si no me equivoco puedo usar la variable wa_id
+        #data = get_text_message_input(current_app.config["RECIPIENT_WAID"], response)
+        #wa_id = "5491149276686"
+        remover = "54911"
+
+        input = wa_id.replace(remover, "")
+        input = "+541115" + input
+        print(f"wa_id: {wa_id}")
+        print(f"input: {input}")
+        data = get_text_message_input(input, response)
         send_message(data)
 
 

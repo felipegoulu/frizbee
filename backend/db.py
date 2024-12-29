@@ -295,7 +295,16 @@ def load_key(user_id):
                     WHERE user_id = %s 
                 """, (user_id,))
                 key = cur.fetchone()
-                
+            
+                if key is None:
+                    # Si no se encuentra la clave, crear una nueva clave vacía
+                    cur.execute("""
+                        INSERT INTO keys (user_id, key, created_at, updated_at)
+                        VALUES (%s, '', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+                        RETURNING key
+                    """, (user_id,))
+                    key = cur.fetchone()  # Obtener la nueva clave vacía
+                    conn.commit()
                 return key 
                 
     except Exception as e:

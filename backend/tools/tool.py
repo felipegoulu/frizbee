@@ -34,6 +34,12 @@ async def load_bm25_model():
     #with open('backend/tools/bm25_model.pkl', 'rb') as f:
     #    bm25 = pickle.load(f)  # Load asynchronously
     #return bm25
+
+    # for server
+    #base_path = "/home/ubuntu/frizbee"
+    #model_path = os.path.join(base_path, 'backend/tools/bm25_model.pkl')
+
+    # for mac
     base_path = "/Users/felipegoulu/projects/activos/jumbo_ai"
     model_path = os.path.join(base_path, 'backend/tools/bm25_model.pkl')
     with open(model_path, 'rb') as f:
